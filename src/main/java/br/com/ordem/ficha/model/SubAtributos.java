@@ -12,12 +12,21 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario {
-
+public class SubAtributos {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    private String nome;
-    private String email;
-    private String senha;
+    private int vidaAtual;
+    private int vidaMaxima;
+
+    private int sanidadeAtual;
+    private int sanidadeMaxima;
+
+    private int ocultismoAtual;
+    private int ocultismoMaximo;
+
+    private int danoExtra;
+    private int corpo;
+    private int exposicaoParanormal;
+
 }

@@ -1,11 +1,17 @@
 package br.com.ordem.ficha.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Ficha {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +22,9 @@ public class Ficha {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Atributos atributos;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private SubAtributos subAtributos;
 
     @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL)
     private List<Pericia> periciais = new ArrayList<>();
