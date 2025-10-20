@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ficha do Personagem</title>
+    <style>
+        body { font-family: ui-serif, Georgia, 'Times New Roman', Times, serif; margin: 0; background: #0b0f14; color: #f1f5f9; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
+        .section { background: #0e141b; border: 2px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 18px 18px 20px; margin-bottom: 22px; box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset; }
+        h1 { font-size: 26px; margin: 0 0 18px; letter-spacing: .3px; }
+        .title { font-weight: 700; font-size: 22px; text-align: center; margin: 0 0 10px; border-bottom: 2px solid rgba(255,255,255,0.15); padding-bottom: 10px; }
+        .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+        .col-12 { grid-column: span 12; }
+        .col-8 { grid-column: span 8; }
+        .col-7 { grid-column: span 7; }
+        .col-6 { grid-column: span 6; }
+        .col-5 { grid-column: span 5; }
+        .col-4 { grid-column: span 4; }
+        .col-3 { grid-column: span 3; }
+        .label { font-weight: 700; color: #ffffff; display: block; margin: 10px 0 4px; }
+        .value { background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 9px 10px; border-radius: 8px; width: 100%; box-sizing: border-box; }
+        table { width: 100%; border-collapse: collapse; border-radius: 10px; overflow: hidden; }
+        th, td { border-bottom: 1px solid rgba(255,255,255,0.12); padding: 10px 12px; text-align: left; }
+        th { color: #cbd5e1; font-weight: 700; }
+        .muted { color: #94a3b8; }
+
+        /* Avatar uploader */
+        .avatar-wrap { display: flex; align-items: center; gap: 18px; }
+        .avatar { width: 128px; height: 128px; border-radius: 9999px; border: 2px solid rgba(255,255,255,0.6); background: linear-gradient(180deg,#e2f1ff,#a7d0ff); display: grid; place-items: center; overflow: hidden; position: relative; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .avatar .hint { position: absolute; inset: 0; display: grid; place-items: center; color: #0b0f14; font-weight: 700; font-size: 12px; opacity: .85; pointer-events: none; text-align: center; padding: 8px; }
+        .upload-input { display: none; }
+        .upload-label { cursor: pointer; color: #cbd5e1; font-size: 12px; text-decoration: underline; }
+
+        /* Bars */
+        .bar { height: 18px; border-radius: 8px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); overflow: hidden; position: relative; }
+        .bar .fill { height: 100%; width: 0; }
+        .bar-red { background: rgba(239,68,68,0.15); }
+        .bar-red .fill { background: linear-gradient(90deg,#ef4444,#7f1d1d); }
+        .bar-blue { background: rgba(59,130,246,0.15); }
+        .bar-blue .fill { background: linear-gradient(90deg,#4338ca,#111827); }
+        .bar-purple { background: rgba(168,85,247,0.15); }
+        .bar-purple .fill { background: linear-gradient(90deg,#8b5cf6,#3b0764); }
+
+        .mini { text-align: center; }
+        .mini .val { font-size: 22px; font-weight: 800; }
+        .mini .lbl { font-size: 13px; color: #cbd5e1; margin-top: 6px; display: block; }
+
+        /* Attributes grid look */
+        .attr { text-align: center; padding: 10px 6px; }
+        .attr .num { font-size: 28px; font-weight: 900; }
+        .attr .name { margin-top: 6px; font-weight: 700; }
+        .dots { display: flex; justify-content: center; gap: 6px; margin-top: 6px; }
+        .dot { width: 16px; height: 16px; border-radius: 4px; border: 1px solid rgba(255,255,255,0.18); }
+        .dot.g { background: rgba(34,197,94,.15); }
+        .dot.b { background: rgba(59,130,246,.15); }
+        .dot.r { background: rgba(239,68,68,.15); }
+
+    </style>
+</head>
+<body>
+<div class="container" th:with="dp=${ficha.detalhesPessoais}, at=${ficha.atributos}, sa=${ficha.subAtributos}, ant=${ficha.antecedentes}">
+    <h1>Ficha do Personagem</h1>
+
+    <div class="grid">
+        <div class="col-6 section">
+            <div class="title">Detalhes Pessoais</div>
+            <div class="grid">
+                <div class="col-12">
+                    <div class="avatar-wrap">
+                        <label class="avatar" for="avatarInput">
+                            <img th:if="${dp != null && dp.imagemUrl}" th:src="${dp.imagemUrl}" alt="Avatar" />
+                            <div class="hint" th:if="${dp == null || !dp.imagemUrl}">Clique para enviar a imagem</div>
+                        </label>
+                        <div>
+                            <input id="avatarInput" class="upload-input" type="file" accept="image/*" />
+                            <div class="muted">O círculo é um placeholder. Clique para escolher uma imagem.</div>
+                            <div class="muted">Pré-visualização será mostrada automaticamente.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-6">
+                    <label class="label">Nome</label>
+                    <input class="value" th:value="${dp != null ? dp.nome : ''}" />
+                </div>
+                <div class="col-6">
+                    <label class="label">Jogador</label>
+                    <input class="value" th:value="${dp != null ? dp.jogador : ''}" />
+                </div>
+                <div class="col-6">
+                    <label class="label">Ocupação</label>
+                    <input class="value" th:value="${dp != null ? dp.ocupacao : ''}" />
+                </div>
+                <div class="col-3">
+                    <label class="label">Idade</label>
+                    <input class="value" type="number" th:value="${dp != null ? dp.idade : ''}" />
+                </div>
+                <div class="col-3">
+                    <label class="label">Sexo</label>
+                    <input class="value" th:value="${dp != null ? dp.sexo : ''}" />
+                </div>
+                <div class="col-6">
+                    <label class="label">Local de Nascimento</label>
+                    <input class="value" th:value="${dp != null ? dp.localNascimento : ''}" />
+                </div>
+                <div class="col-6">
+                    <label class="label">Residência</label>
+                    <input class="value" th:value="${dp != null ? dp.localResidencia : ''}" />
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 section">
+            <div class="title">Condição</div>
+            <div class="grid">
+                <div class="col-12">
+                    <div class="label">Vida</div>
+                    <div class="bar bar-red" th:with="pct=${sa != null && sa.vidaMaxima > 0 ? (sa.vidaAtual * 100 / sa.vidaMaxima) : 0}" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div class="fill" th:style="${'width:' + pct + '%'}"></div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; align-items: center;">
+                            <input type="number" placeholder="Atual" th:value="${sa != null ? sa.vidaAtual : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                            <span style="color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">/</span>
+                            <input type="number" placeholder="Máx" th:value="${sa != null ? sa.vidaMaxima : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="label">Sanidade</div>
+                    <div class="bar bar-blue" th:with="pct=${sa != null && sa.sanidadeMaxima > 0 ? (sa.sanidadeAtual * 100 / sa.sanidadeMaxima) : 0}" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div class="fill" th:style="${'width:' + pct + '%'}"></div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; align-items: center;">
+                            <input type="number" placeholder="Atual" th:value="${sa != null ? sa.sanidadeAtual : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                            <span style="color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">/</span>
+                            <input type="number" placeholder="Máx" th:value="${sa != null ? sa.sanidadeMaxima : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="label">Pontos de Ocultismo</div>
+                    <div class="bar bar-purple" th:with="pct=${sa != null && sa.ocultismoMaximo > 0 ? (sa.ocultismoAtual * 100 / sa.ocultismoMaximo) : 0}" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                        <div class="fill" th:style="${'width:' + pct + '%'}"></div>
+                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; align-items: center;">
+                            <input type="number" placeholder="Atual" th:value="${sa != null ? sa.ocultismoAtual : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                            <span style="color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">/</span>
+                            <input type="number" placeholder="Máx" th:value="${sa != null ? sa.ocultismoMaximo : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-4 mini">
+                    <input type="number" th:value="${sa != null ? sa.danoExtra : 0}" style="width: 100%; text-align: center; font-size: 22px; font-weight: 800; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                    <span class="lbl">Dano Extra</span>
+                </div>
+                <div class="col-4 mini">
+                    <input type="number" th:value="${sa != null ? sa.corpo : 0}" style="width: 100%; text-align: center; font-size: 22px; font-weight: 800; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                    <span class="lbl">Corpo</span>
+                </div>
+                <div class="col-4 mini">
+                    <input type="number" th:value="${sa != null ? sa.exposicaoParanormal : 0}" style="width: 100%; text-align: center; font-size: 22px; font-weight: 800; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                    <span class="lbl">Exposição Paranormal</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="title">Atributos</div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 800px; margin: 0 auto;">
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.aparencia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Aparência</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.constituicao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Constituição</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.destreza : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Destreza</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.educacao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Educação</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.forca : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Força</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.inteligencia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Inteligência</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.poder : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Poder</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.sorte : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Sorte</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.tamanho : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Tamanho</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr" style="width: 120px;">
+                <input class="num" type="number" th:value="${at != null ? at.movimento : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                <div class="name">Movimento</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="section">
+        <h2>Perícias</h2>
+        <div th:if="${ficha.periciais != null and !#lists.isEmpty(ficha.periciais)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Perícia</th>
+                    <th>Valor</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${ficha.periciais}">
+                    <td th:text="${p.nome}"></td>
+                    <td th:text="${p.valor}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="muted" th:if="${ficha.periciais == null or #lists.isEmpty(ficha.periciais)}">Nenhuma perícia cadastrada</div>
+    </div>
+
+    <div class="section">
+        <h2>Inventário</h2>
+        <div th:if="${ficha.inventario != null and !#lists.isEmpty(ficha.inventario)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Peso</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="i : ${ficha.inventario}">
+                    <td th:text="${i.nome}"></td>
+                    <td th:text="${i.peso}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="muted" th:if="${ficha.inventario == null or #lists.isEmpty(ficha.inventario)}">Inventário vazio</div>
+    </div>
+
+    <div class="section">
+        <h2>Habilidades</h2>
+        <div th:if="${ficha.habilidades != null and !#lists.isEmpty(ficha.habilidades)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Habilidade</th>
+                    <th>Descrição</th>
+                    <th>PO</th>
+                    <th>SAN</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="h : ${ficha.habilidades}">
+                    <td th:text="${h.nome}"></td>
+                    <td th:text="${h.descricao}"></td>
+                    <td th:text="${h.custoPO}"></td>
+                    <td th:text="${h.custoSAN}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="muted" th:if="${ficha.habilidades == null or #lists.isEmpty(ficha.habilidades)}">Nenhuma habilidade registrada</div>
+    </div>
+
+    <div class="section">
+        <h2>Antecedentes</h2>
+        <div class="grid">
+            <div class="col-6">
+                <span class="label">Descrição Pessoal</span>
+                <textarea class="value" rows="3" th:text="${ant != null ? ant.descricaoPessoal : ''}"></textarea>
+            </div>
+            <div class="col-6">
+                <span class="label">Ideologias</span>
+                <textarea class="value" rows="3" th:text="${ant != null ? ant.ideologias : ''}"></textarea>
+            </div>
+            <div class="col-6">
+                <span class="label">Pessoas Significativas</span>
+                <textarea class="value" rows="3" th:text="${ant != null ? ant.pessoasSignificativas : ''}"></textarea>
+            </div>
+            <div class="col-6">
+                <span class="label">Locais Importantes</span>
+                <textarea class="value" rows="3" th:text="${ant != null ? ant.locaisImportantes : ''}"></textarea>
+            </div>
+            <div class="col-6">
+                <span class="label">Pertences Queridos</span>
+                <textarea class="value" rows="3" th:text="${ant != null ? ant.pertencesQueridos : ''}"></textarea>
+            </div>
+            <div class="col-6">
+                <span class="label">Fobias</span>
+                <textarea class="value" rows="3" th:text="${ant != null ? ant.fobias : ''}"></textarea>
+            </div>
+            <div class="col-12">
+                <span class="label">Passado</span>
+                <textarea class="value" rows="4" th:text="${ant != null ? ant.passado : ''}"></textarea>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    // Sistema de cálculo de testes - Tabela de referência correta
+    function updateTestValues(input) {
+      const value = parseInt(input.value) || 0;
+      const attrContainer = input.closest('.attr');
+      const dots = attrContainer.querySelectorAll('.dot');
+
+      // Tabela de referência baseada na imagem fornecida
+      const testTable = {
+        1: { normal: 20, bom: null, extremo: null },
+        2: { normal: 19, bom: 20, extremo: null },
+        3: { normal: 18, bom: 20, extremo: null },
+        4: { normal: 17, bom: 19, extremo: null },
+        5: { normal: 16, bom: 19, extremo: 20 },
+        6: { normal: 15, bom: 18, extremo: 20 },
+        7: { normal: 14, bom: 18, extremo: 20 },
+        8: { normal: 13, bom: 17, extremo: 20 },
+        9: { normal: 12, bom: 17, extremo: 20 },
+        10: { normal: 11, bom: 16, extremo: 19 },
+        11: { normal: 10, bom: 16, extremo: 19 },
+        12: { normal: 9, bom: 15, extremo: 19 },
+        13: { normal: 8, bom: 15, extremo: 19 },
+        14: { normal: 7, bom: 14, extremo: 19 },
+        15: { normal: 6, bom: 14, extremo: 18 },
+        16: { normal: 5, bom: 13, extremo: 18 },
+        17: { normal: 4, bom: 13, extremo: 18 },
+        18: { normal: 3, bom: 12, extremo: 18 },
+        19: { normal: 2, bom: 12, extremo: 18 },
+        20: { normal: 1, bom: 11, extremo: 17 },
+      };
+
+      // Busca os valores na tabela ou usa valores padrão para valores fora do range
+      let normal, bom, extremo;
+
+      if (value >= 1 && value <= 20) {
+        const entry = testTable[value];
+        normal = entry.normal;
+        bom = entry.bom;
+        extremo = entry.extremo;
+      } else {
+        // Para valores fora do range (0 ou >20), não mostra valores
+        normal = bom = extremo = null;
+      }
+
+      // Atualiza os quadradinhos
+      dots.forEach(dot => {
+        const testType = dot.getAttribute('data-test');
+        let displayValue = '-';
+
+        if (testType === 'normal') {
+          displayValue = normal !== null ? normal : '-';
+        } else if (testType === 'bom') {
+          displayValue = bom !== null ? bom : '-';
+        } else if (testType === 'extremo') {
+          displayValue = extremo !== null ? extremo : '-';
+        }
+
+        dot.textContent = displayValue;
+      });
+    }
+
+    // Inicializa valores quando a página carrega
+    function initializeTestValues() {
+      const inputs = document.querySelectorAll('.attr input[type="number"]');
+      inputs.forEach(input => {
+        updateTestValues(input);
+      });
+    }
+
+    // Avatar upload
+    (function() {
+      const input = document.getElementById('avatarInput');
+      const avatar = document.querySelector('.avatar');
+      if (!input || !avatar) return;
+      input.addEventListener('change', function(ev){
+        const file = ev.target.files && ev.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e){
+          const existing = avatar.querySelector('img');
+          if (existing) { existing.src = e.target.result; }
+          else {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            avatar.appendChild(img);
+          }
+          const hint = avatar.querySelector('.hint');
+          if (hint) hint.remove();
+        };
+        reader.readAsDataURL(file);
+
+        // Envia para o servidor
+        const form = new FormData();
+        form.append('file', file);
+        fetch('/ficha/upload-avatar', { method: 'POST', body: form })
+          .then(r => r.json())
+          .then(json => {
+            if (json && json.url) {
+              // Atualiza imagem para URL servida pelo backend
+              const existing = avatar.querySelector('img');
+              if (existing) { existing.src = json.url; }
+            }
+          })
+          .catch(() => {});
+      });
+    })();
+
+    // Inicializa quando a página carrega
+    document.addEventListener('DOMContentLoaded', initializeTestValues);
+</script>
+</body>
+</html>
+
+
