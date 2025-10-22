@@ -117,6 +117,21 @@
         display: block;
     }
 
+    .success-message {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #6ee7b7;
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        display: none;
+    }
+
+    .success-message.show {
+        display: block;
+    }
+
     .register-link {
         text-align: center;
         margin-top: 20px;
@@ -136,11 +151,18 @@
     }
 
     .d20-icon {
-        width: 48px;
-        height: 48px;
-        margin: 0 auto 20px;
+        width: 64px;
+        height: 64px;
         display: block;
-        opacity: 0.8;
+        margin: 0 auto 16px;
+        filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.4));
+        transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    /* Efeito ao passar o mouse */
+    .d20-icon:hover {
+        transform: rotate(15deg) scale(1.05);
+        filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.7));
     }
   </style>
 </head>
@@ -156,14 +178,18 @@
     <span th:text="${error}"></span>
   </div>
 
+  <div class="success-message" id="successMessage" th:if="${success}">
+    <span th:text="${success}"></span>
+  </div>
+
   <form th:action="@{/login}" method="post">
     <div class="form-group">
-      <label for="username">Usuário</label>
+      <label for="username">Email</label>
       <input
               type="text"
               id="username"
               name="username"
-              placeholder="Digite seu usuário"
+              placeholder="Digite seu email"
               required
               autocomplete="username"
       />
@@ -187,7 +213,7 @@
   </form>
 
   <div class="register-link">
-    <p>Não tem uma conta? <a href="#" onclick="showRegisterForm()">Cadastre-se aqui</a></p>
+    <p>Não tem uma conta? <a href="/register">Cadastre-se aqui</a></p>
   </div>
 </div>
 
@@ -202,11 +228,6 @@
               errorDiv.classList.remove('show');
           }, 5000);
       }
-  }
-
-  // Função para mostrar formulário de registro (placeholder)
-  function showRegisterForm() {
-      alert('Funcionalidade de registro será implementada em breve!');
   }
 
   // Verifica se há erro na URL

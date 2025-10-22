@@ -28,13 +28,41 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String registerSubmit(@ModelAttribute Usuario usuario) {
-        usuarioService.salvar(usuario);
-        return "redirect:/login";
+    public String registerSubmit(@ModelAttribute Usuario usuario,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            // Validações básicas
+            if (usuario.getNome() == null || usuario.getNome().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Nome é obrigatório");
+                return "redirect:/register";
+            }
+
+            if (usuario.getEmail() == null || usuario.getEmail().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "E-mail é obrigatório");
+                return "redirect:/register";
+            }
+
+            if (usuario.getSenha() == null || usuario.getSenha().length() < 6) {
+                redirectAttributes.addFlashAttribute("error", "Senha deve ter pelo menos 6 caracteres");
+                return "redirect:/register";
+            }
+
+            usuarioService.salvar(usuario);
+            redirectAttributes.addFlashAttribute("success", "Conta criada com sucesso! Faça login para continuar.");
+            return "redirect:/login";
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/register";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro interno do servidor. Tente novamente.");
+            return "redirect:/register";
+        }
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+    public String login(@RequestParam(value = "error", required = false) String error,
+                        Model model) {
         if (error != null) {
             model.addAttribute("error", "Usuário ou senha inválidos");
         }
