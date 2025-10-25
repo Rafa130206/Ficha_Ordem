@@ -26,8 +26,8 @@ public class Ficha {
     @OneToOne(cascade = CascadeType.ALL)
     private SubAtributos subAtributos;
 
-    @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL)
-    private List<Pericia> periciais = new ArrayList<>();
+    @OneToOne(cascade = CascadeType.ALL)
+    private Pericia periciais;
 
     @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL)
     private List<ItemInventario> inventario = new ArrayList<>();
