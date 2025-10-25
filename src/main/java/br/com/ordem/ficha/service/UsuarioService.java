@@ -34,4 +34,8 @@ public class UsuarioService implements UserDetailsService {
         repo.save(usuario);
     }
 
+    public Usuario buscarPorUsername(String username) {
+        return repo.findByEmail(username).orElse(null);
+    }
+
 }
