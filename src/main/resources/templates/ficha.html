@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ficha do Personagem</title>
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
     <style>
         body { font-family: ui-serif, Georgia, 'Times New Roman', Times, serif; margin: 0; background: #0b0f14; color: #f1f5f9; }
         .container { max-width: 1100px; margin: 0 auto; padding: 28px 20px; }
@@ -57,29 +58,96 @@
         .dot.b { background: rgba(59,130,246,.15); }
         .dot.r { background: rgba(239,68,68,.15); }
 
-        .avatar-d20-container {
-            display: grid;
-            grid-template-columns: 1fr auto; /* avatar à esquerda, D20 à direita */
-            align-items: center;
-            column-gap: 40px;
+        /* D20 Roll Modal */
+        .d20-roll-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
         }
 
-        .d20-icon {
-            justify-self: end; /* força o D20 à direita */
+        .d20-roll-modal.show {
+            display: flex;
+        }
+
+        .d20-roll-content {
+            background: #0e141b;
+            border: 2px solid rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset;
+            max-width: 300px;
+            width: 90%;
+        }
+
+        .d20-roll-result {
+            font-size: 72px;
+            font-weight: 900;
+            color: #3b82f6;
+            margin: 20px 0;
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            animation: rollResult 0.6s ease-out;
+        }
+
+        .d20-roll-text {
+            font-size: 18px;
+            color: #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .d20-roll-close {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .d20-roll-close:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-1px);
+        }
+
+        .d20-clickable {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 8px;
             width: 110px;
             height: 110px;
-            filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.4));
-            transition: transform 0.3s ease, filter 0.3s ease;
         }
 
-        .d20-icon:hover {
-            transform: rotate(10deg) scale(1.1);
-            filter: drop-shadow(0 0 12px rgba(59, 130, 246, 0.6));
+        .d20-clickable:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: brightness(1.2);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
         }
 
+        .d20-rolling {
+            animation: d20Spin 1s linear infinite;
+        }
 
+        @keyframes d20Spin {
+            from { transform: rotate(0deg) scale(1); }
+            to { transform: rotate(360deg) scale(1.1); }
+        }
 
+        @keyframes rollResult {
+            0% { transform: scale(0.5); opacity: 0; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
 
     </style>
 </head>
@@ -100,8 +168,8 @@
                         <div>
                             <input id="avatarInput" class="upload-input" type="file" accept="image/*" />
                         </div>
-                        <div class="d20-container">
-                            <img th:src="@{/d20.png}" alt="D20" class="d20-icon" />
+                        <div>
+                            <img th:src="@{/images/d20.png}" alt="D20" class="d20-clickable" id="d20Button" />
                         </div>
                     </div>
                 </div>
@@ -389,6 +457,15 @@
     </div>
 
 </div>
+
+<!-- D20 Roll Modal -->
+<div class="d20-roll-modal" id="d20RollModal">
+    <div class="d20-roll-content">
+        <div class="d20-roll-text">Rolagem do D20</div>
+        <div class="d20-roll-result" id="d20RollResult">?</div>
+        <button class="d20-roll-close" onclick="closeD20Modal()">Fechar</button>
+    </div>
+</div>
 <script>
     function updateTestValues(input) {
       const value = parseInt(input.value) || 0;
@@ -493,6 +570,79 @@
           .catch(() => {});
       });
     })();
+
+    // D20 Roll functionality
+    function rollD20() {
+        const d20Button = document.getElementById('d20Button');
+        const modal = document.getElementById('d20RollModal');
+        const resultDiv = document.getElementById('d20RollResult');
+
+        // Adiciona animação de rolagem
+        d20Button.classList.add('d20-rolling');
+
+        // Simula tempo de rolagem
+        setTimeout(() => {
+            // Remove animação
+            d20Button.classList.remove('d20-rolling');
+
+            // Gera resultado aleatório de 1 a 20
+            const result = Math.floor(Math.random() * 20) + 1;
+
+            // Mostra o resultado
+            resultDiv.textContent = result;
+            modal.classList.add('show');
+
+            // Adiciona efeito sonoro visual baseado no resultado
+            if (result === 20) {
+                resultDiv.style.color = '#10b981'; // Verde para crítico
+                resultDiv.style.textShadow = '0 0 30px rgba(16, 185, 129, 0.8)';
+            } else if (result === 1) {
+                resultDiv.style.color = '#ef4444'; // Vermelho para falha crítica
+                resultDiv.style.textShadow = '0 0 30px rgba(239, 68, 68, 0.8)';
+            } else {
+                resultDiv.style.color = '#3b82f6'; // Azul para resultado normal
+                resultDiv.style.textShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
+            }
+        }, 1500); // 1.5 segundos de animação
+    }
+
+    function closeD20Modal() {
+        const modal = document.getElementById('d20RollModal');
+        const resultDiv = document.getElementById('d20RollResult');
+
+        modal.classList.remove('show');
+
+        // Reset das cores
+        setTimeout(() => {
+            resultDiv.style.color = '#3b82f6';
+            resultDiv.style.textShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
+        }, 300);
+    }
+
+    // Adiciona evento de clique ao D20
+    document.addEventListener('DOMContentLoaded', function() {
+        const d20Button = document.getElementById('d20Button');
+        if (d20Button) {
+            d20Button.addEventListener('click', rollD20);
+        }
+
+        // Fecha modal ao clicar fora dele
+        const modal = document.getElementById('d20RollModal');
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeD20Modal();
+                }
+            });
+        }
+
+        // Fecha modal com tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeD20Modal();
+            }
+        });
+    });
 
     // Inicializa quando a página carrega
     document.addEventListener('DOMContentLoaded', initializeTestValues);
