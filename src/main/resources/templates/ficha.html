@@ -589,23 +589,30 @@
 
     <div class="section">
         <h2>Inventário</h2>
-        <div th:if="${ficha.inventario != null and !#lists.isEmpty(ficha.inventario)}">
-            <table>
-                <thead>
-                <tr>
-                    <th>Item</th>
-                    <th>Peso</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="i : ${ficha.inventario}">
-                    <td th:text="${i.nome}"></td>
-                    <td th:text="${i.peso}"></td>
-                </tr>
-                </tbody>
-            </table>
+
+        <!-- Campo para dinheiro -->
+        <div class="inventory-money-section">
+            <label class="label">Dinheiro (R$)</label>
+            <input type="number" id="moneyInput" class="value" placeholder="0.00" step="0.01" min="0" />
         </div>
-        <div class="muted" th:if="${ficha.inventario == null or #lists.isEmpty(ficha.inventario)}">Inventário vazio</div>
+
+        <!-- Campo para peso total -->
+        <div class="inventory-weight-section">
+            <label class="label">Peso Total</label>
+            <div id="totalWeight" class="weight-display">0 kg</div>
+        </div>
+
+        <!-- Lista de itens do inventário -->
+        <div class="inventory-items-section">
+            <div class="inventory-header">
+                <h3>Itens do Inventário</h3>
+                <button type="button" id="addItemBtn" class="btn-add-item">+ Adicionar Item</button>
+            </div>
+
+            <div id="inventoryItemsList" class="inventory-items-list">
+                <!-- Itens serão adicionados dinamicamente aqui -->
+            </div>
+        </div>
     </div>
 
     <div class="section">
@@ -675,6 +682,35 @@
         <div class="d20-roll-text">Rolagem do D20</div>
         <div class="d20-roll-result" id="d20RollResult">?</div>
         <button class="d20-roll-close" onclick="closeD20Modal()">Fechar</button>
+    </div>
+</div>
+
+<!-- Test Modal -->
+<div class="test-modal" id="testModal">
+    <div class="test-modal-content">
+        <div class="test-modal-header">
+            <h3 id="testModalTitle">Teste</h3>
+            <button class="test-modal-close" onclick="closeTestModal()">✕</button>
+        </div>
+        <div class="test-modal-body">
+            <div class="test-result-section">
+                <div class="test-dice-result">
+                    <span class="test-label">Resultado do D20:</span>
+                    <span class="test-value" id="testDiceResult">?</span>
+                </div>
+                <div class="test-attribute-value">
+                    <span class="test-label">Valor:</span>
+                    <span class="test-value" id="testAttributeValue">?</span>
+                </div>
+            </div>
+            <div class="test-classification" id="testClassification">
+                <div class="classification-result" id="classificationResult">Calculando...</div>
+                <div class="classification-description" id="classificationDescription"></div>
+            </div>
+        </div>
+        <div class="test-modal-footer">
+            <button class="test-modal-close-btn" onclick="closeTestModal()">Fechar</button>
+        </div>
     </div>
 </div>
 <script th:src="@{/js/ficha.js}"></script>
