@@ -4,207 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro - Ficha do Personagem</title>
-  <style>
-    body {
-        font-family: ui-serif, Georgia, 'Times New Roman', Times, serif;
-        margin: 0;
-        background: #0b0f14;
-        color: #f1f5f9;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
 
-    .register-container {
-        background: #0e141b;
-        border: 2px solid rgba(255,255,255,0.15);
-        border-radius: 12px;
-        padding: 40px;
-        box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset;
-        width: 100%;
-        max-width: 450px;
-    }
+  <!-- Ícone da aba -->
+  <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
 
-    .register-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .register-header h1 {
-        font-size: 28px;
-        margin: 0 0 10px;
-        letter-spacing: .3px;
-        color: #ffffff;
-    }
-
-    .register-header p {
-        color: #94a3b8;
-        margin: 0;
-        font-size: 14px;
-    }
-
-    .form-group {
-        margin-bottom: 20px;
-    }
-
-    .form-group label {
-        display: block;
-        font-weight: 700;
-        color: #ffffff;
-        margin-bottom: 8px;
-        font-size: 14px;
-    }
-
-    .form-group input {
-        width: 100%;
-        background: #0b0f14;
-        border: 1px solid rgba(255,255,255,0.15);
-        color: #e5e7eb;
-        padding: 12px 16px;
-        border-radius: 8px;
-        font-size: 16px;
-        box-sizing: border-box;
-        transition: border-color 0.2s ease;
-    }
-
-    .form-group input:focus {
-        outline: none;
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .form-group input::placeholder {
-        color: #6b7280;
-    }
-
-    .form-group input.error {
-        border-color: #ef4444;
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-    }
-
-    .register-button {
-        width: 100%;
-        background: linear-gradient(135deg, #10b981, #059669);
-        border: none;
-        color: white;
-        padding: 14px 20px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        margin-top: 10px;
-    }
-
-    .register-button:hover {
-        background: linear-gradient(135deg, #059669, #047857);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    .register-button:active {
-        transform: translateY(0);
-    }
-
-    .register-button:disabled {
-        background: #6b7280;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-    }
-
-    .error-message {
-        background: rgba(239, 68, 68, 0.1);
-        border: 1px solid rgba(239, 68, 68, 0.3);
-        color: #fca5a5;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        display: none;
-    }
-
-    .error-message.show {
-        display: block;
-    }
-
-    .success-message {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        color: #6ee7b7;
-        padding: 12px 16px;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        display: none;
-    }
-
-    .success-message.show {
-        display: block;
-    }
-
-    .login-link {
-        text-align: center;
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .login-link a {
-        color: #3b82f6;
-        text-decoration: none;
-        font-weight: 600;
-        transition: color 0.2s ease;
-    }
-
-    .login-link a:hover {
-        color: #60a5fa;
-    }
-
-    .d20-icon {
-        width: 48px;
-        height: 48px;
-        margin: 0 auto 20px;
-        display: block;
-        opacity: 0.8;
-    }
-
-    .password-requirements {
-        font-size: 12px;
-        color: #94a3b8;
-        margin-top: 5px;
-    }
-
-    .password-requirements.valid {
-        color: #10b981;
-    }
-
-    .password-requirements.invalid {
-        color: #ef4444;
-    }
-
-    /* Mensagem de validação do e-mail */
-    .email-validation {
-        font-size: 12px;
-        margin-top: 5px;
-        color: #94a3b8;
-        transition: color 0.2s ease;
-    }
-
-    .email-validation.valid {
-        color: #10b981;
-    }
-
-    .email-validation.invalid {
-        color: #ef4444;
-    }
-  </style>
+  <!-- CSS externo -->
+  <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
+
 <body>
 <div class="register-container">
   <div class="register-header">
-    <img th:src="@{/d20.png}" alt="D20" class="d20-icon" />
+    <img th:src="@{/images/d20.png}" alt="D20" class="d20-icon" />
     <h1>Criar Conta</h1>
     <p>Cadastre-se para acessar sua ficha de personagem</p>
   </div>
@@ -220,59 +31,31 @@
   <form th:action="@{/register}" method="post" th:object="${usuario}" id="registerForm">
     <div class="form-group">
       <label for="nome">Nome de Usuário</label>
-      <input
-              type="text"
-              id="nome"
-              th:field="*{nome}"
-              placeholder="Digite seu nome de usuário"
-              required
-              autocomplete="name"
-      />
+      <input type="text" id="nome" th:field="*{nome}" placeholder="Digite seu nome de usuário"
+             required autocomplete="name"/>
     </div>
 
     <div class="form-group">
       <label for="email">E-mail</label>
-      <input
-              type="email"
-              id="email"
-              th:field="*{email}"
-              placeholder="Digite seu e-mail"
-              required
-              autocomplete="email"
-      />
+      <input type="email" id="email" th:field="*{email}" placeholder="Digite seu e-mail"
+             required autocomplete="email"/>
       <div class="email-validation" id="emailValidation">Digite um e-mail válido</div>
     </div>
 
     <div class="form-group">
       <label for="senha">Senha</label>
-      <input
-              type="password"
-              id="senha"
-              th:field="*{senha}"
-              placeholder="Digite sua senha"
-              required
-              autocomplete="new-password"
-              minlength="6"
-      />
-      <div class="password-requirements" id="passwordRequirements">
-        Mínimo 6 caracteres
-      </div>
+      <input type="password" id="senha" th:field="*{senha}" placeholder="Digite sua senha"
+             required autocomplete="new-password" minlength="6"/>
+      <div class="password-requirements" id="passwordRequirements">Mínimo 6 caracteres</div>
     </div>
 
     <div class="form-group">
       <label for="confirmSenha">Confirmar Senha</label>
-      <input
-              type="password"
-              id="confirmSenha"
-              placeholder="Confirme sua senha"
-              required
-              autocomplete="new-password"
-      />
+      <input type="password" id="confirmSenha" placeholder="Confirme sua senha"
+             required autocomplete="new-password"/>
     </div>
 
-    <button type="submit" class="register-button" id="registerButton">
-      Criar Conta
-    </button>
+    <button type="submit" class="register-button" id="registerButton">Criar Conta</button>
   </form>
 
   <div class="login-link">
@@ -280,105 +63,7 @@
   </div>
 </div>
 
-<script>
-  const senhaInput = document.getElementById('senha');
-  const confirmSenhaInput = document.getElementById('confirmSenha');
-  const passwordRequirements = document.getElementById('passwordRequirements');
-  const registerButton = document.getElementById('registerButton');
-  const registerForm = document.getElementById('registerForm');
-  const emailInput = document.getElementById('email');
-  const emailValidation = document.getElementById('emailValidation');
-
-  function validatePassword() {
-      const senha = senhaInput.value;
-      const confirmSenha = confirmSenhaInput.value;
-
-      if (senha.length >= 6) {
-          passwordRequirements.textContent = '✅ Mínimo 6 caracteres';
-          passwordRequirements.className = 'password-requirements valid';
-      } else {
-          passwordRequirements.textContent = '❌ Mínimo 6 caracteres';
-          passwordRequirements.className = 'password-requirements invalid';
-      }
-
-      if (confirmSenha && senha !== confirmSenha) {
-          confirmSenhaInput.classList.add('error');
-          return false;
-      } else {
-          confirmSenhaInput.classList.remove('error');
-      }
-
-      return senha.length >= 6 && senha === confirmSenha;
-  }
-
-  function validateEmail(email) {
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      return emailRegex.test(email);
-  }
-
-  function updateButtonState() {
-      const senhaValida = validatePassword();
-      const nome = document.getElementById('nome').value.trim();
-      const email = emailInput.value.trim();
-      const emailValido = validateEmail(email);
-
-      if (email === '') {
-          emailValidation.textContent = 'Digite um e-mail válido';
-          emailValidation.className = 'email-validation';
-          emailInput.classList.remove('error');
-      } else if (emailValido) {
-          emailValidation.textContent = '✅ E-mail válido';
-          emailValidation.className = 'email-validation valid';
-          emailInput.classList.remove('error');
-      } else {
-          emailValidation.textContent = '❌ E-mail inválido';
-          emailValidation.className = 'email-validation invalid';
-          emailInput.classList.add('error');
-      }
-
-      const isValid = senhaValida && nome !== '' && emailValido;
-      registerButton.disabled = !isValid;
-  }
-
-  registerForm.addEventListener('submit', function(e) {
-      const email = emailInput.value.trim();
-      if (!validateEmail(email)) {
-          e.preventDefault();
-          showError('Por favor, insira um e-mail válido');
-          return;
-      }
-
-      if (!validatePassword()) {
-          e.preventDefault();
-          showError('As senhas não coincidem ou são muito curtas');
-          return;
-      }
-
-      registerButton.disabled = true;
-      registerButton.textContent = 'Criando conta...';
-  });
-
-  function showError(message) {
-      const errorDiv = document.getElementById('errorMessage');
-      if (errorDiv) {
-          errorDiv.textContent = message;
-          errorDiv.classList.add('show');
-          setTimeout(() => {
-              errorDiv.classList.remove('show');
-          }, 5000);
-      }
-  }
-
-  senhaInput.addEventListener('input', updateButtonState);
-  confirmSenhaInput.addEventListener('input', updateButtonState);
-  document.getElementById('nome').addEventListener('input', updateButtonState);
-  emailInput.addEventListener('input', updateButtonState);
-
-  document.addEventListener('DOMContentLoaded', function() {
-      const nomeField = document.getElementById('nome');
-      if (nomeField) nomeField.focus();
-      updateButtonState();
-  });
-</script>
+<!-- JS externo -->
+<script th:src="@{/js/register.js}"></script>
 </body>
 </html>
