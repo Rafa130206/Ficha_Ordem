@@ -89,4 +89,77 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/forgot-password")
+    public String forgotPasswordForm() {
+        return "forgot-password";
+    }
+
+    @PostMapping("/forgot-password")
+    public String forgotPasswordSubmit(@RequestParam String email,
+                                       RedirectAttributes redirectAttributes) {
+        try {
+            if (email == null || email.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "E-mail é obrigatório");
+                return "redirect:/forgot-password";
+            }
+
+            // Por segurança, sempre redirecionar para a página de redefinição
+            // Não informar se o email existe ou não
+            return "redirect:/reset-password?email=" + email.trim();
+
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao processar solicitação. Tente novamente.");
+            return "redirect:/forgot-password";
+        }
+    }
+
+    @GetMapping("/reset-password")
+    public String resetPasswordForm(@RequestParam(required = false) String email,
+                                    Model model) {
+        if (email == null || email.trim().isEmpty()) {
+            return "redirect:/forgot-password";
+        }
+
+        model.addAttribute("email", email.trim());
+        return "reset-password";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPasswordSubmit(@RequestParam String email,
+                                      @RequestParam String senha,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            if (email == null || email.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "E-mail é obrigatório");
+                return "redirect:/forgot-password";
+            }
+
+            if (senha == null || senha.length() < 6) {
+                redirectAttributes.addFlashAttribute("error", "Senha deve ter pelo menos 6 caracteres");
+                return "redirect:/reset-password?email=" + email.trim();
+            }
+
+            // Verificar se o email existe antes de tentar atualizar
+            if (!usuarioService.existePorEmail(email.trim())) {
+                // Por segurança, mostrar mensagem genérica mesmo que o email não exista
+                redirectAttributes.addFlashAttribute("success",
+                        "Se o e-mail estiver cadastrado, a senha foi redefinida com sucesso. Faça login com sua nova senha.");
+                return "redirect:/login";
+            }
+
+            // Atualizar senha
+            usuarioService.atualizarSenha(email.trim(), senha);
+
+            redirectAttributes.addFlashAttribute("success", "Senha redefinida com sucesso! Faça login com sua nova senha.");
+            return "redirect:/login";
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/reset-password?email=" + email.trim();
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao redefinir senha. Tente novamente.");
+            return "redirect:/reset-password?email=" + email.trim();
+        }
+    }
+
 }
