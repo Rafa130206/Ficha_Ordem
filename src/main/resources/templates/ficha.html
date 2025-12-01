@@ -20,12 +20,10 @@
                 <div class="col-12">
                     <div class="avatar-wrap">
                         <label class="avatar" for="avatarInput">
-                            <img th:if="${dp == null or dp.imagemUrl == null or dp.imagemUrl == ''}" th:src="${dp.imagemUrl}" alt="Avatar" />
+                            <img th:if="${dp != null and dp.imagemUrl != null and dp.imagemUrl != ''}" th:src="${dp.imagemUrl}" alt="Avatar" />
                             <div class="hint" th:if="${dp == null or dp.imagemUrl == null or dp.imagemUrl == ''}">Clique para enviar a imagem</div>
                         </label>
-                        <div>
-                            <input id="avatarInput" class="upload-input" type="file" accept="image/*" />
-                        </div>
+                        <input id="avatarInput" class="upload-input" type="file" accept="image/*" />
                         <div>
                             <img th:src="@{/images/d20.png}" alt="D20" class="d20-clickable" id="d20Button" />
                         </div>
@@ -68,48 +66,48 @@
             <div class="grid">
                 <div class="col-12">
                     <div class="label">Vida</div>
-                    <div class="bar bar-red" th:with="pct=${sa != null && sa.vidaMaxima > 0 ? (sa.vidaAtual * 100 / sa.vidaMaxima) : 0}" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div class="bar bar-red" th:with="pct=${sa != null && sa.vidaMaxima > 0 ? (sa.vidaAtual * 100 / sa.vidaMaxima) : 0}">
                         <div class="fill" th:style="${'width:' + pct + '%'}"></div>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; align-items: center;">
-                            <input type="number" placeholder="Atual" th:value="${sa != null ? sa.vidaAtual : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
-                            <span style="color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">/</span>
-                            <input type="number" placeholder="Máx" th:value="${sa != null ? sa.vidaMaxima : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                        <div class="bar-input-wrapper">
+                            <input type="number" class="bar-input" placeholder="Atual" th:value="${sa != null ? sa.vidaAtual : ''}" />
+                            <span class="bar-separator">/</span>
+                            <input type="number" class="bar-input" placeholder="Máx" th:value="${sa != null ? sa.vidaMaxima : ''}" />
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="label">Sanidade</div>
-                    <div class="bar bar-blue" th:with="pct=${sa != null && sa.sanidadeMaxima > 0 ? (sa.sanidadeAtual * 100 / sa.sanidadeMaxima) : 0}" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div class="bar bar-blue" th:with="pct=${sa != null && sa.sanidadeMaxima > 0 ? (sa.sanidadeAtual * 100 / sa.sanidadeMaxima) : 0}">
                         <div class="fill" th:style="${'width:' + pct + '%'}"></div>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; align-items: center;">
-                            <input type="number" placeholder="Atual" th:value="${sa != null ? sa.sanidadeAtual : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
-                            <span style="color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">/</span>
-                            <input type="number" placeholder="Máx" th:value="${sa != null ? sa.sanidadeMaxima : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                        <div class="bar-input-wrapper">
+                            <input type="number" class="bar-input" placeholder="Atual" th:value="${sa != null ? sa.sanidadeAtual : ''}" />
+                            <span class="bar-separator">/</span>
+                            <input type="number" class="bar-input" placeholder="Máx" th:value="${sa != null ? sa.sanidadeMaxima : ''}" />
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <div class="label">Pontos de Ocultismo</div>
-                    <div class="bar bar-purple" th:with="pct=${sa != null && sa.ocultismoMaximo > 0 ? (sa.ocultismoAtual * 100 / sa.ocultismoMaximo) : 0}" style="position: relative; display: flex; align-items: center; justify-content: center;">
+                    <div class="bar bar-purple" th:with="pct=${sa != null && sa.ocultismoMaximo > 0 ? (sa.ocultismoAtual * 100 / sa.ocultismoMaximo) : 0}">
                         <div class="fill" th:style="${'width:' + pct + '%'}"></div>
-                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; gap: 8px; align-items: center;">
-                            <input type="number" placeholder="Atual" th:value="${sa != null ? sa.ocultismoAtual : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
-                            <span style="color: white; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">/</span>
-                            <input type="number" placeholder="Máx" th:value="${sa != null ? sa.ocultismoMaximo : ''}" style="width: 50px; text-align: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.5); color: white; font-weight: bold; font-size: 12px; padding: 2px 4px; border-radius: 4px;" />
+                        <div class="bar-input-wrapper">
+                            <input type="number" class="bar-input" placeholder="Atual" th:value="${sa != null ? sa.ocultismoAtual : ''}" />
+                            <span class="bar-separator">/</span>
+                            <input type="number" class="bar-input" placeholder="Máx" th:value="${sa != null ? sa.ocultismoMaximo : ''}" />
                         </div>
                     </div>
                 </div>
 
                 <div class="col-4 mini">
-                    <input type="number" th:value="${sa != null ? sa.danoExtra : 0}" style="width: 80%; text-align: center; font-size: 22px; font-weight: 800; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                    <input type="number" th:value="${sa != null ? sa.danoExtra : 0}" />
                     <span class="lbl">Dano Extra</span>
                 </div>
                 <div class="col-4 mini">
-                    <input type="number" th:value="${sa != null ? sa.corpo : 0}" style="width: 80%; text-align: center; font-size: 22px; font-weight: 800; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                    <input type="number" th:value="${sa != null ? sa.corpo : 0}" />
                     <span class="lbl">Corpo</span>
                 </div>
                 <div class="col-4 mini">
-                    <input type="text" th:value="${sa != null ? sa.exposicaoParanormal : 0}" style="width: 80%; text-align: center; font-size: 22px; font-weight: 800; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+                    <input type="text" th:value="${sa != null ? sa.exposicaoParanormal : 0}" />
                     <span class="lbl">Exposição Paranormal</span>
                 </div>
             </div>
@@ -118,9 +116,9 @@
 
     <div class="section">
         <div class="title">Atributos</div>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 800px; margin: 0 auto;">
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.aparencia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+        <div class="attributes-container">
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.aparencia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Aparência</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -128,8 +126,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.constituicao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.constituicao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Constituição</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -137,8 +135,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.destreza : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.destreza : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Destreza</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -146,8 +144,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.educacao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.educacao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Educação</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -155,8 +153,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.forca : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.forca : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Força</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -164,8 +162,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.inteligencia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.inteligencia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Inteligência</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -173,8 +171,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.poder : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.poder : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Poder</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -182,8 +180,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.sorte : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.sorte : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Sorte</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -191,12 +189,12 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.tamanho : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.tamanho : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Tamanho</div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${at != null ? at.movimento : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${at != null ? at.movimento : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Movimento</div>
             </div>
         </div>
@@ -205,9 +203,9 @@
 
     <div class="section">
         <div class="title">Perícias</div>
-        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 800px; margin: 0 auto;">
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.antropologia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+        <div class="skills-container">
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.antropologia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Antropologia (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -215,8 +213,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.atirarPistolas : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.atirarPistolas : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Atirar (Pistolas) (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -224,8 +222,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.atirarRifles : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.atirarRifles : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Atirar (Rifles) (5)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -233,8 +231,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.atirarEspingardas : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.atirarEspingardas : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Atirar (Espingardas) (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -242,8 +240,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.atirarArcos : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.atirarArcos : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Atirar (Arcos) (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -251,8 +249,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.arqueologia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.arqueologia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Arqueologia (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -260,8 +258,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.arremssar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.arremssar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Arremessar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -269,8 +267,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.arteOficio : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.arteOficio : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Arte & Ofício (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -278,8 +276,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.avaliacao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.avaliacao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Avaliação (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -287,8 +285,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.charme : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.charme : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Charme (3)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -296,8 +294,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.chaveiro : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.chaveiro : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Chaveiro (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -305,8 +303,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.ciencia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.ciencia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Ciências (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -314,8 +312,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.consertosEletricos : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.consertosEletricos : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Consertos Elét. (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -323,8 +321,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.consertosMecanicos : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.consertosMecanicos : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Consertos Mec. (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -332,8 +330,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.contabilidade : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.contabilidade : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Contabilidade (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -341,8 +339,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.direito : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.direito : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Direito (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -350,8 +348,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.dirigirAuto : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.dirigirAuto : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Dirigir Auto. (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -359,8 +357,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.disfarce : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.disfarce : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Disfarce (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -368,8 +366,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.encontrar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.encontrar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Encontrar (5)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -377,8 +375,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.escutar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.escutar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Escutar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -386,8 +384,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.escalar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.escalar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Escalar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -395,8 +393,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.esquivar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.esquivar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Esquivar (Meia DES)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -404,8 +402,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.labia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.labia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Lábia (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -413,8 +411,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.intimidacao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.intimidacao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Intimidação (3)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -422,8 +420,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.historia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.historia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">História (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -431,8 +429,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.furtividade : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.furtividade : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Furtividade (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -440,8 +438,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.linguaNatural : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.linguaNatural : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Língua Natural (EDU)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -449,8 +447,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.lutar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.lutar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Lutar (5)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -458,8 +456,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.medicina : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.medicina : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Medicina (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -467,8 +465,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.mundoNatural : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.mundoNatural : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Mundo Natural (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -476,8 +474,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.natacao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.natacao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Natação (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -485,8 +483,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.nivelDeCredito : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.nivelDeCredito : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Nível de Crédito (0)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -494,8 +492,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.ocultismo : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.ocultismo : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Ocultismo (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -503,8 +501,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.persuasao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.persuasao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Persuasão (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -512,8 +510,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.prestidigitacao : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.prestidigitacao : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Prestidigitação (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -521,8 +519,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.primeirosSocorros : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.primeirosSocorros : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Primeiros Socorros (6)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -530,8 +528,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.psicanalise : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.psicanalise : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Psicanalise (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -539,8 +537,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.psicologia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.psicologia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Psicologia (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -548,8 +546,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.saltar : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.saltar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Saltar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -557,8 +555,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.rastrear : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.rastrear : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Rastrear (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -566,8 +564,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.sobrevivencia : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.sobrevivencia : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Sobrevivência (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -575,8 +573,8 @@
                     <span class="dot r" data-test="extremo">-</span>
                 </div>
             </div>
-            <div class="attr" style="width: 120px;">
-                <input class="num" type="number" th:value="${per != null ? per.usarComputadores : 0}" oninput="updateTestValues(this)" style="width: 100%; text-align: center; font-size: 28px; font-weight: 900; background: #0b0f14; border: 1px solid rgba(255,255,255,0.15); color: #e5e7eb; padding: 8px; border-radius: 8px;" />
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.usarComputadores : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Usar Computadores (5)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
@@ -588,7 +586,7 @@
     </div>
 
     <div class="section">
-        <h2>Inventário</h2>
+        <h2 class="title">Inventário</h2>
 
         <!-- Campo para dinheiro -->
         <div class="inventory-money-section">
@@ -596,10 +594,18 @@
             <input type="number" id="moneyInput" class="value" placeholder="0.00" step="0.01" min="0" />
         </div>
 
-        <!-- Campo para peso total -->
+        <!-- Campo para peso total e peso máximo -->
         <div class="inventory-weight-section">
-            <label class="label">Peso Total</label>
-            <div id="totalWeight" class="weight-display">0 kg</div>
+            <div class="weight-row">
+                <div class="weight-item">
+                    <label class="label">Peso Total</label>
+                    <div id="totalWeight" class="weight-display">0 kg</div>
+                </div>
+                <div class="weight-item">
+                    <label class="label">Peso Máximo</label>
+                    <input type="number" id="maxWeightInput" class="value" placeholder="0.0" step="0.1" min="0" />
+                </div>
+            </div>
         </div>
 
         <!-- Lista de itens do inventário -->
@@ -616,28 +622,19 @@
     </div>
 
     <div class="section">
-        <h2>Habilidades</h2>
-        <div th:if="${ficha.habilidades != null and !#lists.isEmpty(ficha.habilidades)}">
-            <table>
-                <thead>
-                <tr>
-                    <th>Habilidade</th>
-                    <th>Descrição</th>
-                    <th>PO</th>
-                    <th>SAN</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="h : ${ficha.habilidades}">
-                    <td th:text="${h.nome}"></td>
-                    <td th:text="${h.descricao}"></td>
-                    <td th:text="${h.custoPO}"></td>
-                    <td th:text="${h.custoSAN}"></td>
-                </tr>
-                </tbody>
-            </table>
+        <h2 class="title">Habilidades</h2>
+
+        <!-- Lista de habilidades -->
+        <div class="skills-items-section">
+            <div class="skills-header">
+                <h3>Habilidades do Personagem</h3>
+                <button type="button" id="addSkillBtn" class="btn-add-skill">+ Adicionar Habilidade</button>
+            </div>
+
+            <div id="skillsItemsList" class="skills-items-list">
+                <!-- Habilidades serão adicionadas dinamicamente aqui -->
+            </div>
         </div>
-        <div class="muted" th:if="${ficha.habilidades == null or #lists.isEmpty(ficha.habilidades)}">Nenhuma habilidade registrada</div>
     </div>
 
     <div class="section">
@@ -716,5 +713,3 @@
 <script th:src="@{/js/ficha.js}"></script>
 </body>
 </html>
-
-
