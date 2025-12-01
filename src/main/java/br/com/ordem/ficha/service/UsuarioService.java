@@ -38,4 +38,20 @@ public class UsuarioService implements UserDetailsService {
         return repo.findByEmail(username).orElse(null);
     }
 
+    public boolean existePorEmail(String email) {
+        return repo.existsByEmail(email);
+    }
+
+    public void atualizarSenha(String email, String novaSenha) {
+        Usuario usuario = repo.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("E-mail não encontrado"));
+
+        if (novaSenha == null || novaSenha.length() < 6) {
+            throw new IllegalArgumentException("Senha deve ter pelo menos 6 caracteres");
+        }
+
+        usuario.setSenha(new BCryptPasswordEncoder().encode(novaSenha));
+        repo.save(usuario);
+    }
+
 }

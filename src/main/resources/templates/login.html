@@ -10,6 +10,7 @@
 
   <!-- CSS -->
   <link rel="stylesheet" th:href="@{/css/login.css}">
+  <link rel="stylesheet" th:href="@{/css/toast.css}">
 </head>
 <body>
 <div class="login-container">
@@ -19,13 +20,6 @@
     <p>Entre com suas credenciais para acessar sua ficha</p>
   </div>
 
-  <div class="error-message" id="errorMessage" th:if="${error}">
-    <span th:text="${error}"></span>
-  </div>
-
-  <div class="success-message" id="successMessage" th:if="${success}">
-    <span th:text="${success}"></span>
-  </div>
 
   <form th:action="@{/login}" method="post">
     <div class="form-group">
@@ -42,6 +36,10 @@
              required autocomplete="current-password"/>
     </div>
 
+    <div class="forgot-password-link">
+      <a th:href="@{/forgot-password}">Esqueci minha senha</a>
+    </div>
+
     <button type="submit" class="login-button">Entrar</button>
   </form>
 
@@ -51,6 +49,22 @@
 </div>
 
 <!-- JS -->
+<script th:src="@{/js/toast.js}"></script>
 <script th:src="@{/js/login.js}"></script>
+<script th:inline="javascript">
+  // Passar mensagens do servidor para o JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+      const successMessage = /*[[${success}]]*/ null;
+      if (successMessage) {
+          setTimeout(() => {
+              if (typeof showSuccess !== 'undefined') {
+                  showSuccess(successMessage, 'Conta criada!');
+              } else if (typeof toastManager !== 'undefined') {
+                  toastManager.success(successMessage, 'Conta criada!');
+              }
+          }, 300);
+      }
+  });
+</script>
 </body>
 </html>
