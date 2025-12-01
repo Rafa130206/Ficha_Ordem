@@ -17,6 +17,9 @@ public class SecurityConfig {
     @Autowired
     private LoginSuccessHandler loginSuccessHandler;
 
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
@@ -26,7 +29,10 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .successHandler(loginSuccessHandler)
                         .permitAll())
-                .logout(logout -> logout.logoutSuccessUrl("/login?logout").permitAll());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler)
+                        .permitAll());
         return http.build();
     }
 

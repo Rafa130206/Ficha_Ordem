@@ -89,9 +89,4 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/logout")
-    public String logout() {
-        return "redirect:/login";
-    }
-
 }

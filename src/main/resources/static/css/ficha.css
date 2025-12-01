@@ -17,12 +17,77 @@ body {
     box-shadow: 0 0 0 1px rgba(255,255,255,0.04) inset;
 }
 
+/* Page Header */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
 h1 {
     font-size: 32px;
-    margin: 0 0 30px;
+    margin: 0;
     letter-spacing: .3px;
     color: #ffffff;
-    text-align: center;
+    text-align: left;
+    flex: 1;
+}
+
+.logout-form {
+    margin: 0;
+}
+
+.logout-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.logout-button:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.logout-button:active {
+    transform: translateY(0);
+}
+
+.logout-icon {
+    font-size: 16px;
+}
+
+.logout-text {
+    font-size: 14px;
+}
+
+@media (max-width: 600px) {
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .logout-button {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 h2 {

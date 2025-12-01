@@ -18,6 +18,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 200);
     }
 
+    // Verificar logout bem-sucedido
+    const logout = urlParams.get('logout');
+    if (logout === 'true') {
+        setTimeout(() => {
+            if (typeof showSuccess !== 'undefined') {
+                showSuccess('Logout realizado com sucesso!', 'Até logo!');
+            } else if (typeof toastManager !== 'undefined') {
+                toastManager.success('Logout realizado com sucesso!', 'Até logo!');
+            }
+            // Limpar parâmetro da URL
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, document.title, newUrl);
+        }, 300);
+    }
+
     // Foca no campo de email ao carregar a página
     const usernameField = document.getElementById('username');
     if (usernameField) usernameField.focus();
