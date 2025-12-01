@@ -65,27 +65,54 @@ function initializeTestValues() {
 }
 
 // Avatar upload
-(function () {
+function initializeAvatarUpload() {
     const input = document.getElementById('avatarInput');
     const avatar = document.querySelector('.avatar');
-    if (!input || !avatar) return;
+
+    if (!input || !avatar) {
+        console.error('Avatar input or avatar element not found');
+        return;
+    }
+
+    console.log('Avatar upload initialized');
+
+    // Garante que o clique no label acione o input
+    avatar.addEventListener('click', function(e) {
+        // Previne comportamento padrão e aciona o input
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Avatar clicked, triggering file input');
+        input.click();
+    });
 
     input.addEventListener('change', function (ev) {
         const file = ev.target.files && ev.target.files[0];
-        if (!file) return;
+        if (!file) {
+            console.log('No file selected');
+            return;
+        }
+
+        console.log('File selected:', file.name);
 
         const reader = new FileReader();
         reader.onload = function (e) {
-            const existing = avatar.querySelector('img');
+            // Remove a hint se existir
+            const hint = avatar.querySelector('.hint');
+            if (hint) hint.remove();
+
+            // Verifica se já existe uma imagem
+            let existing = avatar.querySelector('img');
             if (existing) {
                 existing.src = e.target.result;
             } else {
                 const img = document.createElement('img');
                 img.src = e.target.result;
+                img.alt = 'Avatar';
                 avatar.appendChild(img);
             }
-            const hint = avatar.querySelector('.hint');
-            if (hint) hint.remove();
+        };
+        reader.onerror = function() {
+            console.error('Error reading file');
         };
         reader.readAsDataURL(file);
 
@@ -93,7 +120,12 @@ function initializeTestValues() {
         const form = new FormData();
         form.append('file', file);
         fetch('/ficha/upload-avatar', { method: 'POST', body: form })
-            .then(r => r.json())
+            .then(r => {
+                if (!r.ok) {
+                    throw new Error('Upload failed');
+                }
+                return r.json();
+            })
             .then(json => {
                 if (json && json.url) {
                     // Atualiza imagem para URL servida pelo backend
@@ -103,9 +135,14 @@ function initializeTestValues() {
                     }
                 }
             })
-            .catch(() => {});
+            .catch(err => {
+                console.error('Error uploading avatar:', err);
+            });
     });
-})();
+}
+
+// Inicializa quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', initializeAvatarUpload);
 
 // D20 Roll functionality
 function rollD20() {
@@ -189,6 +226,7 @@ class InventoryManager {
         this.items = [];
         this.moneyInput = document.getElementById('moneyInput');
         this.totalWeightDisplay = document.getElementById('totalWeight');
+        this.maxWeightInput = document.getElementById('maxWeightInput');
         this.itemsList = document.getElementById('inventoryItemsList');
         this.addItemBtn = document.getElementById('addItemBtn');
 
@@ -204,6 +242,9 @@ class InventoryManager {
             this.items = data.items || [];
             if (data.money !== undefined) {
                 this.moneyInput.value = data.money;
+            }
+            if (data.maxWeight !== undefined && this.maxWeightInput) {
+                this.maxWeightInput.value = data.maxWeight;
             }
         }
 
@@ -221,6 +262,14 @@ class InventoryManager {
         this.moneyInput.addEventListener('input', () => {
             this.saveToLocalStorage();
         });
+
+        // Evento para atualizar peso quando o peso máximo mudar
+        if (this.maxWeightInput) {
+            this.maxWeightInput.addEventListener('input', () => {
+                this.updateTotalWeight();
+                this.saveToLocalStorage();
+            });
+        }
     }
 
     addItem() {
@@ -267,6 +316,16 @@ class InventoryManager {
         }, 0);
 
         this.totalWeightDisplay.textContent = `${totalWeight.toFixed(1)} kg`;
+
+        // Verifica se o peso total excede o peso máximo
+        if (this.maxWeightInput) {
+            const maxWeight = parseFloat(this.maxWeightInput.value) || 0;
+            if (maxWeight > 0 && totalWeight > maxWeight) {
+                this.totalWeightDisplay.classList.add('overweight');
+            } else {
+                this.totalWeightDisplay.classList.remove('overweight');
+            }
+        }
     }
 
     renderItems() {
@@ -313,7 +372,8 @@ class InventoryManager {
     saveToLocalStorage() {
         const data = {
             items: this.items,
-            money: this.moneyInput.value
+            money: this.moneyInput.value,
+            maxWeight: this.maxWeightInput ? this.maxWeightInput.value : ''
         };
         localStorage.setItem('fichaInventory', JSON.stringify(data));
     }
@@ -355,6 +415,174 @@ document.addEventListener('DOMContentLoaded', function() {
     inventoryManager = new InventoryManager();
 });
 
+// Skills Management System
+class SkillsManager {
+    constructor() {
+        this.skills = [];
+        this.skillsList = document.getElementById('skillsItemsList');
+        this.addSkillBtn = document.getElementById('addSkillBtn');
+
+        this.initializeSkills();
+        this.bindEvents();
+    }
+
+    initializeSkills() {
+        // Carrega dados salvos do localStorage se existirem
+        const savedData = localStorage.getItem('fichaSkills');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            this.skills = data.skills || [];
+        }
+
+        this.renderSkills();
+    }
+
+    bindEvents() {
+        // Evento para adicionar habilidade
+        this.addSkillBtn.addEventListener('click', () => {
+            this.addSkill();
+        });
+    }
+
+    addSkill() {
+        const newSkill = {
+            id: Date.now(),
+            nome: '',
+            descricao: '',
+            custoPO: 0,
+            custoSAN: 0
+        };
+
+        this.skills.push(newSkill);
+        this.renderSkills();
+        this.saveToLocalStorage();
+
+        // Foca no campo de nome da nova habilidade
+        const newSkillElement = this.skillsList.querySelector(`[data-skill-id="${newSkill.id}"]`);
+        const nameInput = newSkillElement.querySelector('.skill-name');
+        nameInput.focus();
+    }
+
+    removeSkill(skillId) {
+        this.skills = this.skills.filter(skill => skill.id !== skillId);
+        this.renderSkills();
+        this.saveToLocalStorage();
+    }
+
+    updateSkill(skillId, field, value) {
+        const skill = this.skills.find(skill => skill.id === skillId);
+        if (skill) {
+            if (field === 'custoPO' || field === 'custoSAN') {
+                skill[field] = parseInt(value) || 0;
+            } else {
+                skill[field] = value;
+            }
+            this.saveToLocalStorage();
+        }
+    }
+
+    renderSkills() {
+        if (this.skills.length === 0) {
+            this.skillsList.innerHTML = `
+                <div class="skills-empty">
+                    Nenhuma habilidade registrada. Clique em "Adicionar Habilidade" para começar.
+                </div>
+            `;
+            return;
+        }
+
+        this.skillsList.innerHTML = this.skills.map(skill => `
+            <div class="skill-item" data-skill-id="${skill.id}">
+                <input
+                    type="text"
+                    class="skill-name"
+                    placeholder="Nome da habilidade"
+                    value="${skill.nome}"
+                    onchange="skillsManager.updateSkill(${skill.id}, 'nome', this.value)"
+                />
+                <textarea
+                    class="skill-description"
+                    placeholder="Descrição da habilidade"
+                    rows="2"
+                    onchange="skillsManager.updateSkill(${skill.id}, 'descricao', this.value)"
+                >${skill.descricao}</textarea>
+                <div class="skill-costs">
+                    <div class="cost-group">
+                        <label>PO:</label>
+                        <input
+                            type="number"
+                            class="skill-po"
+                            placeholder="0"
+                            min="0"
+                            value="${skill.custoPO}"
+                            onchange="skillsManager.updateSkill(${skill.id}, 'custoPO', this.value)"
+                        />
+                    </div>
+                    <div class="cost-group">
+                        <label>SAN:</label>
+                        <input
+                            class="skill-san"
+                            placeholder="0"
+                            min="0"
+                            value="${skill.custoSAN}"
+                            onchange="skillsManager.updateSkill(${skill.id}, 'custoSAN', this.value)"
+                        />
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="btn-remove-skill"
+                    onclick="skillsManager.removeSkill(${skill.id})"
+                    title="Remover habilidade"
+                >
+                    ✕
+                </button>
+            </div>
+        `).join('');
+    }
+
+    saveToLocalStorage() {
+        const data = {
+            skills: this.skills
+        };
+        localStorage.setItem('fichaSkills', JSON.stringify(data));
+    }
+
+    // Método para exportar dados (útil para salvar no backend)
+    exportData() {
+        return {
+            skills: this.skills.map(skill => ({
+                nome: skill.nome,
+                descricao: skill.descricao,
+                custoPO: parseInt(skill.custoPO) || 0,
+                custoSAN: parseInt(skill.custoSAN) || 0
+            }))
+        };
+    }
+
+    // Método para importar dados (útil para carregar do backend)
+    importData(data) {
+        if (data.skills && Array.isArray(data.skills)) {
+            this.skills = data.skills.map((skill, index) => ({
+                id: Date.now() + index,
+                nome: skill.nome || '',
+                descricao: skill.descricao || '',
+                custoPO: parseInt(skill.custoPO) || 0,
+                custoSAN: parseInt(skill.custoSAN) || 0
+            }));
+        }
+
+        this.renderSkills();
+        this.saveToLocalStorage();
+    }
+}
+
+// Inicializa o gerenciador de habilidades quando a página carrega
+let skillsManager;
+document.addEventListener('DOMContentLoaded', function() {
+    skillsManager = new SkillsManager();
+});
+
 // Test System for Attributes and Skills
 class TestSystem {
     constructor() {
@@ -364,6 +592,8 @@ class TestSystem {
         this.testAttributeValue = document.getElementById('testAttributeValue');
         this.classificationResult = document.getElementById('classificationResult');
         this.classificationDescription = document.getElementById('classificationDescription');
+        this.testDiceLabel = document.querySelector('.test-dice-result .test-label');
+        this.testAttributeLabel = document.querySelector('.test-attribute-value .test-label');
 
         this.initializeTestSystem();
     }
@@ -388,22 +618,33 @@ class TestSystem {
     }
 
     bindTestEvents() {
-        // Adiciona eventos de clique apenas nos nomes dos atributos e perícias
-        const nameElements = document.querySelectorAll('.attr .name');
-        nameElements.forEach(nameElement => {
+        // Adiciona eventos de clique na caixa inteira dos atributos e perícias
+        const attrElements = document.querySelectorAll('.attr');
+        attrElements.forEach(attrElement => {
+            const nameElement = attrElement.querySelector('.name');
+            if (!nameElement) return;
+
             const name = nameElement.textContent.trim();
 
             // Pula Movimento e Tamanho - não devem ter testes
             if (name === 'Movimento' || name === 'Tamanho') {
+                attrElement.style.cursor = 'default';
                 return;
             }
 
-            nameElement.addEventListener('click', (e) => {
+            // Adiciona cursor pointer para indicar que é clicável
+            attrElement.style.cursor = 'pointer';
+
+            attrElement.addEventListener('click', (e) => {
+                // Previne clique se o usuário clicou em um input ou botão dentro do attr
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.classList.contains('dot')) {
+                    return;
+                }
+
                 e.preventDefault();
                 e.stopPropagation();
 
-                const attr = nameElement.closest('.attr');
-                const input = attr.querySelector('input[type="number"]');
+                const input = attrElement.querySelector('input[type="number"]');
 
                 if (input) {
                     const value = parseInt(input.value) || 0;
@@ -440,6 +681,12 @@ class TestSystem {
 
         // Atualiza o modal
         this.testModalTitle.textContent = `Teste de ${testName}`;
+        if (this.testDiceLabel) {
+            this.testDiceLabel.textContent = 'Resultado do D20:';
+        }
+        if (this.testAttributeLabel) {
+            this.testAttributeLabel.textContent = 'Valor:';
+        }
         this.testDiceResult.textContent = diceResult;
         this.testAttributeValue.textContent = attributeValue;
 
@@ -456,20 +703,32 @@ class TestSystem {
         // Gera resultado aleatório de 1 a 100
         const diceResult = Math.floor(Math.random() * 100) + 1;
 
-        // Pega o valor atual da sanidade
-        const sanityInputs = document.querySelectorAll('.bar-blue input[type="number"]');
-        let currentSanity = 0;
-        if (sanityInputs.length > 0) {
-            currentSanity = parseInt(sanityInputs[0].value) || 0;
-        }
+        // Pega o valor da Exposição Paranormal
+        let exposicaoParanormal = 0;
+        const miniInputs = document.querySelectorAll('.mini input');
+        miniInputs.forEach(input => {
+            const miniDiv = input.closest('.mini');
+            if (miniDiv) {
+                const label = miniDiv.querySelector('.lbl');
+                if (label && label.textContent.trim() === 'Exposição Paranormal') {
+                    exposicaoParanormal = parseInt(input.value) || 0;
+                }
+            }
+        });
 
         // Classifica o resultado
-        const classification = this.classifySanityResult(diceResult, currentSanity);
+        const classification = this.classifySanityResult(diceResult, exposicaoParanormal);
 
         // Atualiza o modal
         this.testModalTitle.textContent = 'Teste de Sanidade';
+        if (this.testDiceLabel) {
+            this.testDiceLabel.textContent = 'Resultado do D100:';
+        }
+        if (this.testAttributeLabel) {
+            this.testAttributeLabel.textContent = 'Exposição Paranormal:';
+        }
         this.testDiceResult.textContent = diceResult;
-        this.testAttributeValue.textContent = currentSanity;
+        this.testAttributeValue.textContent = exposicaoParanormal;
 
         // Atualiza classificação
         this.classificationResult.textContent = classification.result;
@@ -480,9 +739,11 @@ class TestSystem {
         this.showTestModal();
     }
 
-    classifySanityResult(diceResult, sanityValue) {
+    classifySanityResult(diceResult, exposicaoParanormal) {
         // Lógica específica para teste de sanidade
-        if (diceResult <= sanityValue) {
+        // Se d100 <= Exposição Paranormal = SUCESSO
+        // Se d100 > Exposição Paranormal = FRACASSO
+        if (diceResult <= exposicaoParanormal) {
             return {
                 result: 'SUCESSO',
                 type: 'bom',
@@ -616,9 +877,47 @@ function closeTestModal() {
     }
 }
 
+// Sistema de atualização das barras de progresso
+function updateProgressBars() {
+    const bars = document.querySelectorAll('.bar');
+
+    bars.forEach(bar => {
+        const inputs = bar.querySelectorAll('.bar-input');
+        if (inputs.length >= 2) {
+            const currentInput = inputs[0];
+            const maxInput = inputs[1];
+            const fillElement = bar.querySelector('.fill');
+
+            if (fillElement) {
+                const current = parseFloat(currentInput.value) || 0;
+                const max = parseFloat(maxInput.value) || 0;
+                const percentage = max > 0 ? (current / max) * 100 : 0;
+
+                fillElement.style.width = percentage + '%';
+            }
+        }
+    });
+}
+
+// Adiciona listeners para atualizar as barras quando os valores mudarem
+function initializeProgressBars() {
+    const barInputs = document.querySelectorAll('.bar-input');
+
+    barInputs.forEach(input => {
+        input.addEventListener('input', updateProgressBars);
+        input.addEventListener('change', updateProgressBars);
+    });
+
+    // Atualiza as barras na inicialização
+    updateProgressBars();
+}
+
 // Inicializa o sistema de testes quando a página carrega
 let testSystem;
 document.addEventListener('DOMContentLoaded', function() {
     testSystem = new TestSystem();
     window.testSystem = testSystem; // Torna acessível globalmente
+
+    // Inicializa as barras de progresso
+    initializeProgressBars();
 });
