@@ -66,6 +66,7 @@ public class AuthController {
         if (error != null) {
             model.addAttribute("error", "Usuário ou senha inválidos");
         }
+        // Mensagens flash (success) já são adicionadas via RedirectAttributes em outros métodos
         return "login";
     }
 

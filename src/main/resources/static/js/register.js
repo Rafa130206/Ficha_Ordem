@@ -61,13 +61,13 @@ registerForm.addEventListener('submit', function (e) {
     const email = emailInput.value.trim();
     if (!validateEmail(email)) {
         e.preventDefault();
-        showError('Por favor, insira um e-mail válido');
+        showErrorToast('Por favor, insira um e-mail válido');
         return;
     }
 
     if (!validatePassword()) {
         e.preventDefault();
-        showError('As senhas não coincidem ou são muito curtas');
+        showErrorToast('As senhas não coincidem ou são muito curtas');
         return;
     }
 
@@ -75,15 +75,17 @@ registerForm.addEventListener('submit', function (e) {
     registerButton.textContent = 'Criando conta...';
 });
 
-function showError(message) {
-    const errorDiv = document.getElementById('errorMessage');
-    if (errorDiv) {
-        errorDiv.textContent = message;
-        errorDiv.classList.add('show');
-        setTimeout(() => {
-            errorDiv.classList.remove('show');
-        }, 5000);
-    }
+function showErrorToast(message) {
+    // Aguardar um pouco para garantir que toast.js foi carregado
+    setTimeout(() => {
+        if (typeof showError !== 'undefined') {
+            showError(message, 'Erro no Cadastro');
+        } else if (typeof toastManager !== 'undefined') {
+            toastManager.error(message, 'Erro no Cadastro');
+        } else {
+            console.error('Sistema de toast não disponível');
+        }
+    }, 100);
 }
 
 senhaInput.addEventListener('input', updateButtonState);
