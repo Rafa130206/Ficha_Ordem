@@ -10,6 +10,7 @@
 
   <!-- CSS externo -->
   <link rel="stylesheet" th:href="@{/css/register.css}">
+  <link rel="stylesheet" th:href="@{/css/toast.css}">
 </head>
 
 <body>
@@ -20,13 +21,6 @@
     <p>Cadastre-se para acessar sua ficha de personagem</p>
   </div>
 
-  <div class="error-message" id="errorMessage" th:if="${error}">
-    <span th:text="${error}"></span>
-  </div>
-
-  <div class="success-message" id="successMessage" th:if="${success}">
-    <span th:text="${success}"></span>
-  </div>
 
   <form th:action="@{/register}" method="post" th:object="${usuario}" id="registerForm">
     <div class="form-group">
@@ -64,6 +58,34 @@
 </div>
 
 <!-- JS externo -->
+<script th:src="@{/js/toast.js}"></script>
 <script th:src="@{/js/register.js}"></script>
+<script th:inline="javascript">
+  // Passar mensagens do servidor para o JavaScript
+  document.addEventListener('DOMContentLoaded', function() {
+      const errorMessage = /*[[${error}]]*/ null;
+      const successMessage = /*[[${success}]]*/ null;
+
+      if (errorMessage) {
+          setTimeout(() => {
+              if (typeof showError !== 'undefined') {
+                  showError(errorMessage, 'Erro no Cadastro');
+              } else if (typeof toastManager !== 'undefined') {
+                  toastManager.error(errorMessage, 'Erro no Cadastro');
+              }
+          }, 300);
+      }
+
+      if (successMessage) {
+          setTimeout(() => {
+              if (typeof showSuccess !== 'undefined') {
+                  showSuccess(successMessage, 'Cadastro realizado!');
+              } else if (typeof toastManager !== 'undefined') {
+                  toastManager.success(successMessage, 'Cadastro realizado!');
+              }
+          }, 300);
+      }
+  });
+</script>
 </body>
 </html>
