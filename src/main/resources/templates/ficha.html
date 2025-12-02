@@ -237,6 +237,33 @@
                 </div>
             </div>
             <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.arqueologia : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Arqueologia (1)</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.arremessar : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Arremessar (4)</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.arteOficio : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Arte & Ofício (1)</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr">
                 <input class="num" type="number" th:value="${per != null ? per.atirarPistolas : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Atirar (Pistolas) (4)</div>
                 <div class="dots">
@@ -266,33 +293,6 @@
             <div class="attr">
                 <input class="num" type="number" th:value="${per != null ? per.atirarArcos : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Atirar (Arcos) (4)</div>
-                <div class="dots">
-                    <span class="dot g" data-test="normal">-</span>
-                    <span class="dot b" data-test="bom">-</span>
-                    <span class="dot r" data-test="extremo">-</span>
-                </div>
-            </div>
-            <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.arqueologia : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Arqueologia (1)</div>
-                <div class="dots">
-                    <span class="dot g" data-test="normal">-</span>
-                    <span class="dot b" data-test="bom">-</span>
-                    <span class="dot r" data-test="extremo">-</span>
-                </div>
-            </div>
-            <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.arremessar : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Arremessar (4)</div>
-                <div class="dots">
-                    <span class="dot g" data-test="normal">-</span>
-                    <span class="dot b" data-test="bom">-</span>
-                    <span class="dot r" data-test="extremo">-</span>
-                </div>
-            </div>
-            <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.arteOficio : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Arte & Ofício (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
@@ -399,8 +399,8 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.escutar : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Escutar (4)</div>
+                <input class="num" type="number" th:value="${per != null ? per.escalar : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Escalar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
@@ -408,8 +408,8 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.escalar : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Escalar (4)</div>
+                <input class="num" type="number" th:value="${per != null ? per.escutar : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Escutar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
@@ -426,17 +426,8 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.labia : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Lábia (1)</div>
-                <div class="dots">
-                    <span class="dot g" data-test="normal">-</span>
-                    <span class="dot b" data-test="bom">-</span>
-                    <span class="dot r" data-test="extremo">-</span>
-                </div>
-            </div>
-            <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.intimidacao : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Intimidação (3)</div>
+                <input class="num" type="number" th:value="${per != null ? per.furtividade : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Furtividade (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
@@ -453,8 +444,17 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.furtividade : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Furtividade (4)</div>
+                <input class="num" type="number" th:value="${per != null ? per.intimidacao : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Intimidação (3)</div>
+                <div class="dots">
+                    <span class="dot g" data-test="normal">-</span>
+                    <span class="dot b" data-test="bom">-</span>
+                    <span class="dot r" data-test="extremo">-</span>
+                </div>
+            </div>
+            <div class="attr">
+                <input class="num" type="number" th:value="${per != null ? per.labia : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Lábia (1)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
@@ -570,8 +570,8 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.saltar : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Saltar (4)</div>
+                <input class="num" type="number" th:value="${per != null ? per.rastrear : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Rastrear (2)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
@@ -579,8 +579,8 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.rastrear : 0}" oninput="updateTestValues(this)" />
-                <div class="name">Rastrear (2)</div>
+                <input class="num" type="number" th:value="${per != null ? per.saltar : 0}" oninput="updateTestValues(this)" />
+                <div class="name">Saltar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>
                     <span class="dot b" data-test="bom">-</span>
