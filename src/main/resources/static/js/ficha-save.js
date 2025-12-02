@@ -9,12 +9,36 @@
     document.addEventListener('DOMContentLoaded', function() {
         const container = document.querySelector('.container');
         if (container && container.dataset.fichaId) {
-            fichaId = parseInt(container.dataset.fichaId);
+            const idValue = container.dataset.fichaId;
+            if (idValue && idValue.trim() !== '') {
+                fichaId = parseInt(idValue);
+                if (!isNaN(fichaId)) {
+                    console.log('Ficha ID carregado:', fichaId);
+                } else {
+                    console.error('Ficha ID inválido:', idValue);
+                }
+            } else {
+                console.error('Ficha ID está vazio no data attribute');
+            }
+        } else {
+            console.error('Ficha ID não encontrado no container');
+            console.log('Container encontrado:', container);
+            if (container) {
+                console.log('Dataset do container:', container.dataset);
+            }
         }
 
         const saveButton = document.getElementById('saveButton');
         if (saveButton) {
-            saveButton.addEventListener('click', salvarFicha);
+            console.log('Botão de salvar encontrado, adicionando event listener');
+            saveButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Botão salvar clicado');
+                salvarFicha(false);
+            });
+        } else {
+            console.error('Botão de salvar não encontrado');
         }
 
         // Auto-save a cada 30 segundos
@@ -27,12 +51,28 @@
 
     // Função principal de salvamento
     async function salvarFicha(isAutoSave = false) {
-        if (!fichaId) {
-            console.error('ID da ficha não encontrado');
+        // Tentar obter o ID novamente se não estiver definido
+        if (!fichaId || isNaN(fichaId)) {
+            const container = document.querySelector('.container');
+            if (container && container.dataset.fichaId) {
+                const idValue = container.dataset.fichaId;
+                if (idValue && idValue.trim() !== '') {
+                    fichaId = parseInt(idValue);
+                    console.log('Ficha ID obtido do container:', fichaId);
+                }
+            }
+        }
+
+        if (!fichaId || isNaN(fichaId)) {
+            console.error('ID da ficha não encontrado ou inválido. fichaId:', fichaId);
+            console.log('Container:', document.querySelector('.container'));
+            console.log('Dataset:', document.querySelector('.container')?.dataset);
+            mostrarMensagemErro('ID da ficha não encontrado. Recarregue a página.');
             return;
         }
 
         if (saveInProgress) {
+            console.log('Salvamento já em progresso, ignorando...');
             return;
         }
 
@@ -46,20 +86,51 @@
                 saveButton.innerHTML = '<span>💾</span> <span>Salvando...</span>';
             }
 
+            console.log('Coletando dados da ficha...');
             const dadosFicha = coletarDadosFicha();
             dadosFicha.id = fichaId;
 
+            console.log('Dados coletados:', dadosFicha);
+            console.log('Enviando para /api/ficha/salvar...');
+
+            // Obter token CSRF
+            const csrfToken = document.querySelector('meta[name="_csrf"]')?.content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]')?.content;
+
+            const headers = {
+                'Content-Type': 'application/json',
+            };
+
+            // Adicionar token CSRF se disponível
+            if (csrfToken && csrfHeader) {
+                headers[csrfHeader] = csrfToken;
+            }
+
             const response = await fetch('/api/ficha/salvar', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: headers,
                 body: JSON.stringify(dadosFicha)
             });
 
-            const result = await response.json();
+            console.log('Resposta recebida:', response.status, response.statusText);
 
-            if (response.ok && result.success) {
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Erro na resposta:', errorText);
+                let errorMessage = 'Erro ao salvar ficha';
+                try {
+                    const errorJson = JSON.parse(errorText);
+                    errorMessage = errorJson.error || errorMessage;
+                } catch (e) {
+                    errorMessage = errorText || `Erro HTTP ${response.status}`;
+                }
+                throw new Error(errorMessage);
+            }
+
+            const result = await response.json();
+            console.log('Resultado do salvamento:', result);
+
+            if (result.success) {
                 if (!isAutoSave) {
                     mostrarMensagemSucesso('Ficha salva com sucesso!');
                 }
@@ -80,17 +151,27 @@
 
     // Coletar todos os dados da ficha
     function coletarDadosFicha() {
-        const dados = {
-            detalhesPessoais: coletarDetalhesPessoais(),
-            atributos: coletarAtributos(),
-            subAtributos: coletarSubAtributos(),
-            periciais: coletarPericias(),
-            antecedentes: coletarAntecedentes(),
-            inventario: coletarInventario(),
-            habilidades: coletarHabilidades()
-        };
+        try {
+            const dados = {
+                detalhesPessoais: coletarDetalhesPessoais(),
+                atributos: coletarAtributos(),
+                subAtributos: coletarSubAtributos(),
+                periciais: coletarPericias(),
+                antecedentes: coletarAntecedentes(),
+                inventario: coletarInventario(),
+                habilidades: coletarHabilidades()
+            };
 
-        return dados;
+            // Validar que pelo menos alguns dados foram coletados
+            if (!dados.detalhesPessoais && !dados.atributos && !dados.subAtributos) {
+                console.warn('Nenhum dado foi coletado da ficha');
+            }
+
+            return dados;
+        } catch (error) {
+            console.error('Erro ao coletar dados da ficha:', error);
+            throw error;
+        }
     }
 
     // Coletar detalhes pessoais
