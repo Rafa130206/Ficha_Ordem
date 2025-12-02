@@ -16,8 +16,8 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
-        // Adicionar parâmetro de sucesso na URL para mostrar toast
-        setDefaultTargetUrl("/ficha?loginSuccess=true");
+        // Redirecionar para o menu após login bem-sucedido
+        setDefaultTargetUrl("/menu?loginSuccess=true");
         super.onAuthenticationSuccess(request, response, authentication);
     }
 }

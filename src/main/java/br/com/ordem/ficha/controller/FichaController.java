@@ -32,10 +32,26 @@ public class FichaController {
     }
 
     @GetMapping("/ficha")
-    public String exibirFicha(Model model, @AuthenticationPrincipal User principal) {
-        Ficha ficha = (principal != null)
-                ? fichaService.getOrCreateByUSerEmail(principal.getUsername())
-                : new Ficha();
+    public String exibirFicha(@RequestParam(required = false) Long id,
+                              Model model,
+                              @AuthenticationPrincipal User principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        Ficha ficha;
+        if (id != null) {
+            // Buscar ficha específica por ID
+            try {
+                ficha = fichaService.buscarPorIdEUsuario(id, principal.getUsername());
+            } catch (IllegalArgumentException e) {
+                return "redirect:/menu";
+            }
+        } else {
+            // Se não especificou ID, redirecionar para o menu
+            return "redirect:/menu";
+        }
+
         model.addAttribute("ficha", ficha);
         return "ficha";
     }
@@ -62,6 +78,10 @@ public class FichaController {
             String url = "/uploads/" + filename;
 
             if (principal != null) {
+                // Buscar a ficha pelo ID do request ou usar a primeira do usuário
+                // Por enquanto, vamos precisar passar o ID via request
+                // Para upload de avatar, assumimos que já estamos em uma ficha específica
+                // Isso será melhorado se necessário
                 Ficha ficha = fichaService.getOrCreateByUSerEmail(principal.getUsername());
                 fichaService.updateAvatarUrl(ficha.getId(), url);
             }

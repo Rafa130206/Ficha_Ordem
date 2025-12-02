@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Menu - Ficha do Personagem</title>
+
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.png}">
+
+    <link rel="stylesheet" th:href="@{/css/ficha.css}">
+    <link rel="stylesheet" th:href="@{/css/toast.css}">
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1>Minhas Fichas</h1>
+        <div style="display: flex; gap: 10px;">
+            <form th:action="@{/menu/criar-ficha}" method="post" style="margin: 0;">
+                <button type="submit" class="menu-create-button">
+                    <span style="font-size: 18px;">➕</span>
+                    <span>Nova Ficha</span>
+                </button>
+            </form>
+            <form th:action="@{/logout}" method="post" class="logout-form">
+                <button type="submit" class="logout-button" id="logoutButton">
+                    <span class="logout-icon">🚪</span>
+                    <span class="logout-text">Sair</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="fichas-grid" th:if="${fichas != null and !fichas.isEmpty()}">
+        <div class="ficha-card" th:each="ficha : ${fichas}">
+            <div class="ficha-card-header">
+                <div class="ficha-avatar">
+                    <img th:if="${ficha.detalhesPessoais != null and ficha.detalhesPessoais.imagemUrl != null and ficha.detalhesPessoais.imagemUrl != ''}"
+                         th:src="${ficha.detalhesPessoais.imagemUrl}"
+                         alt="Avatar" />
+                    <div class="ficha-avatar-placeholder"
+                         th:if="${ficha.detalhesPessoais == null or ficha.detalhesPessoais.imagemUrl == null or ficha.detalhesPessoais.imagemUrl == ''}">
+                        🎲
+                    </div>
+                </div>
+                <h3 class="ficha-card-title" th:text="${ficha.detalhesPessoais != null and ficha.detalhesPessoais.nome != null and ficha.detalhesPessoais.nome != ''} ? ${ficha.detalhesPessoais.nome} : 'Ficha Sem Nome'"></h3>
+            </div>
+            <div class="ficha-card-body">
+                <div class="ficha-info" th:if="${ficha.detalhesPessoais != null}">
+                    <p th:if="${ficha.detalhesPessoais.ocupacao != null and ficha.detalhesPessoais.ocupacao != ''}">
+                        <strong>Ocupação:</strong> <span th:text="${ficha.detalhesPessoais.ocupacao}"></span>
+                    </p>
+                    <p th:if="${ficha.detalhesPessoais.jogador != null and ficha.detalhesPessoais.jogador != ''}">
+                        <strong>Jogador:</strong> <span th:text="${ficha.detalhesPessoais.jogador}"></span>
+                    </p>
+                </div>
+                <div class="ficha-info" th:if="${ficha.detalhesPessoais == null}">
+                    <p style="color: #94a3b8; font-style: italic;">Ficha vazia - Clique para editar</p>
+                </div>
+            </div>
+            <div class="ficha-card-footer">
+                <a th:href="@{/ficha(id=${ficha.id})}" class="ficha-view-button">Abrir Ficha</a>
+                <form th:action="@{/menu/excluir-ficha}" method="post" style="margin: 0;"
+                      th:onsubmit="return confirm('Tem certeza que deseja excluir esta ficha? Esta ação não pode ser desfeita.');">
+                    <input type="hidden" name="id" th:value="${ficha.id}"/>
+                    <button type="submit" class="ficha-delete-button">Excluir</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="fichas-empty" th:if="${fichas == null or fichas.isEmpty()}">
+        <div class="empty-state">
+            <img th:src="@{/images/d20.png}" alt="D20" class="empty-icon" />
+            <h2>Nenhuma ficha encontrada</h2>
+            <p>Crie sua primeira ficha de personagem para começar!</p>
+            <form th:action="@{/menu/criar-ficha}" method="post" style="margin-top: 20px;">
+                <button type="submit" class="menu-create-button-large">
+                    <span style="font-size: 24px;">➕</span>
+                    <span>Criar Primeira Ficha</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/js/toast.js}"></script>
+<script th:inline="javascript">
+    // Passar mensagens do servidor para o JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const errorMessage = /*[[${error}]]*/ null;
+        const successMessage = /*[[${success}]]*/ null;
+
+        if (errorMessage) {
+            setTimeout(() => {
+                if (typeof showError !== 'undefined') {
+                    showError(errorMessage, 'Erro');
+                } else if (typeof toastManager !== 'undefined') {
+                    toastManager.error(errorMessage, 'Erro');
+                }
+            }, 300);
+        }
+
+        if (successMessage) {
+            setTimeout(() => {
+                if (typeof showSuccess !== 'undefined') {
+                    showSuccess(successMessage, 'Sucesso');
+                } else if (typeof toastManager !== 'undefined') {
+                    toastManager.success(successMessage, 'Sucesso');
+                }
+            }, 300);
+        }
+
+        // Verificar login success na URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const loginSuccess = urlParams.get('loginSuccess');
+        if (loginSuccess === 'true') {
+            setTimeout(() => {
+                if (typeof showSuccess !== 'undefined') {
+                    showSuccess('Login realizado com sucesso!', 'Bem-vindo!');
+                } else if (typeof toastManager !== 'undefined') {
+                    toastManager.success('Login realizado com sucesso!', 'Bem-vindo!');
+                }
+                // Limpar parâmetro da URL
+                const newUrl = window.location.pathname;
+                window.history.replaceState({}, document.title, newUrl);
+            }, 500);
+        }
+    });
+</script>
+</body>
+</html>
+

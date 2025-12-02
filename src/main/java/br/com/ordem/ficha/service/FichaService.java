@@ -39,4 +39,43 @@ public class FichaService {
         f.getDetalhesPessoais().setImagemUrl(url);
         return fichaRepository.save(f);
     }
+
+    public java.util.List<Ficha> listarPorUsuarioEmail(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow();
+        return fichaRepository.findByUsuario_IdOrderByIdDesc(usuario.getId());
+    }
+
+    @Transactional
+    public Ficha criarNovaFicha(String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow();
+        Ficha novaFicha = new Ficha();
+        novaFicha.setUsuario(usuario);
+        novaFicha.setDetalhesPessoais(new DetalhesPessoais());
+        return fichaRepository.save(novaFicha);
+    }
+
+    @Transactional
+    public void excluirFicha(Long fichaId, String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow();
+        Ficha ficha = fichaRepository.findById(fichaId)
+                .orElseThrow(() -> new IllegalArgumentException("Ficha não encontrada"));
+
+        if (ficha.getUsuario().getId() != usuario.getId()) {
+            throw new IllegalArgumentException("Você não tem permissão para excluir esta ficha");
+        }
+
+        fichaRepository.delete(ficha);
+    }
+
+    public Ficha buscarPorIdEUsuario(Long fichaId, String email) {
+        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow();
+        Ficha ficha = fichaRepository.findById(fichaId)
+                .orElseThrow(() -> new IllegalArgumentException("Ficha não encontrada"));
+
+        if (ficha.getUsuario().getId() != usuario.getId()) {
+            throw new IllegalArgumentException("Você não tem permissão para acessar esta ficha");
+        }
+
+        return ficha;
+    }
 }
