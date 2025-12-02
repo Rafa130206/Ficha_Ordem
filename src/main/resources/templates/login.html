@@ -55,12 +55,43 @@
   // Passar mensagens do servidor para o JavaScript
   document.addEventListener('DOMContentLoaded', function() {
       const successMessage = /*[[${success}]]*/ null;
+      const errorMessage = /*[[${error}]]*/ null;
+
+      // Função para mostrar toast de erro
+      function mostrarErro(mensagem) {
+          let tentativas = 0;
+          const maxTentativas = 10;
+
+          const tentarMostrar = () => {
+              tentativas++;
+              if (typeof toastManager !== 'undefined' && toastManager.container) {
+                  toastManager.error(mensagem, 'Erro no Login');
+                  return true;
+              } else if (typeof showError !== 'undefined') {
+                  showError(mensagem, 'Erro no Login');
+                  return true;
+              } else if (tentativas < maxTentativas) {
+                  setTimeout(tentarMostrar, 100);
+                  return false;
+              }
+              return false;
+          };
+
+          setTimeout(tentarMostrar, 100);
+      }
+
+      // Verificar mensagem de erro do servidor (flash attribute ou parâmetro na URL)
+      if (errorMessage) {
+          mostrarErro(errorMessage);
+      }
+
+      // Verificar mensagem de sucesso (após registro)
       if (successMessage) {
           setTimeout(() => {
-              if (typeof showSuccess !== 'undefined') {
-                  showSuccess(successMessage, 'Conta criada!');
-              } else if (typeof toastManager !== 'undefined') {
+              if (typeof toastManager !== 'undefined') {
                   toastManager.success(successMessage, 'Conta criada!');
+              } else if (typeof showSuccess !== 'undefined') {
+                  showSuccess(successMessage, 'Conta criada!');
               }
           }, 300);
       }

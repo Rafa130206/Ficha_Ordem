@@ -413,6 +413,7 @@ class InventoryManager {
 let inventoryManager;
 document.addEventListener('DOMContentLoaded', function() {
     inventoryManager = new InventoryManager();
+    window.inventoryManager = inventoryManager; // Expor globalmente
 });
 
 // Skills Management System
@@ -581,6 +582,7 @@ class SkillsManager {
 let skillsManager;
 document.addEventListener('DOMContentLoaded', function() {
     skillsManager = new SkillsManager();
+    window.skillsManager = skillsManager; // Expor globalmente
 });
 
 // Test System for Attributes and Skills

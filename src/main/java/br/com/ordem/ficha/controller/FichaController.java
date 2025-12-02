@@ -10,7 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -91,6 +93,34 @@ public class FichaController {
             return ResponseEntity.ok(body);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Falha ao salvar arquivo"));
+        }
+    }
+
+    @PostMapping(value = "/api/ficha/salvar", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> salvarFicha(@RequestBody Ficha fichaAtualizada,
+                                                           @AuthenticationPrincipal User principal) {
+        try {
+            if (principal == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Map.of("error", "Usuário não autenticado"));
+            }
+
+            if (fichaAtualizada.getId() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("error", "ID da ficha é obrigatório"));
+            }
+
+            Ficha fichaSalva = fichaService.salvarFichaCompleta(fichaAtualizada.getId(), fichaAtualizada, principal.getUsername());
+
+            return ResponseEntity.ok(Map.of("success", true, "message", "Ficha salva com sucesso!", "id", fichaSalva.getId()));
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "Erro ao salvar ficha: " + e.getMessage()));
         }
     }
 }

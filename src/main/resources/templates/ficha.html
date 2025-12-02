@@ -11,10 +11,14 @@
     <link rel="stylesheet" th:href="@{/css/toast.css}">
 </head>
 <body>
-<div class="container" th:with="dp=${ficha.detalhesPessoais}, at=${ficha.atributos}, sa=${ficha.subAtributos}, ant=${ficha.antecedentes}">
+<div class="container" th:with="dp=${ficha.detalhesPessoais}, at=${ficha.atributos}, sa=${ficha.subAtributos}, ant=${ficha.antecedentes}" data-ficha-id="${ficha.id}">
     <div class="page-header">
         <h1>Ficha do Personagem</h1>
         <div style="display: flex; gap: 10px;">
+            <button type="button" id="saveButton" class="save-button">
+                <span class="save-icon">💾</span>
+                <span class="save-text">Salvar</span>
+            </button>
             <a th:href="@{/menu}" class="menu-back-button">
                 <span style="font-size: 16px;">←</span>
                 <span>Voltar ao Menu</span>
@@ -727,6 +731,7 @@
 </div>
 <script th:src="@{/js/toast.js}"></script>
 <script th:src="@{/js/ficha.js}"></script>
+<script th:src="@{/js/ficha-save.js}"></script>
 <script th:inline="javascript">
     // Mostrar toast de sucesso após login
     document.addEventListener('DOMContentLoaded', function() {

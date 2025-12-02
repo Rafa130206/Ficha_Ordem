@@ -96,6 +96,45 @@ h1 {
     box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
 }
 
+.save-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.save-button:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.save-button:active {
+    transform: translateY(0);
+}
+
+.save-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.save-icon {
+    font-size: 16px;
+}
+
+.save-text {
+    font-size: 14px;
+}
+
 .menu-back-button:active {
     transform: translateY(0);
 }
@@ -214,6 +253,7 @@ textarea.value {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    gap: 15px;
     margin-bottom: 20px;
     width: 100%;
 }
@@ -747,6 +787,14 @@ div.bar.bar-purple div.fill {
     max-width: 500px;
     width: 90%;
     overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+.test-modal.show .test-modal-content {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .test-modal-header {
@@ -1002,9 +1050,8 @@ div.bar.bar-purple div.fill {
         justify-content: center;
     }
 }
-    color: #ffffff;
-}
 
+/* Test Modal Body Styles */
 .test-modal-body {
     padding: 30px;
 }
@@ -1049,6 +1096,58 @@ div.bar.bar-purple div.fill {
     font-weight: 700;
     color: #ffffff;
     margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Estilos para diferentes tipos de classificação */
+.classification-result.classification-fracasso {
+    color: #ef4444;
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+.classification-result.classification-desastre {
+    color: #dc2626;
+    text-shadow: 0 0 15px rgba(220, 38, 38, 0.7);
+    animation: pulse-red 1s ease-in-out;
+}
+
+.classification-result.classification-normal {
+    color: #10b981;
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.classification-result.classification-bom {
+    color: #059669;
+    text-shadow: 0 0 12px rgba(5, 150, 105, 0.6);
+}
+
+.classification-result.classification-extremo {
+    color: #34d399;
+    text-shadow: 0 0 15px rgba(52, 211, 153, 0.8);
+    animation: pulse-green 1s ease-in-out;
+}
+
+@keyframes pulse-red {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes pulse-green {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.05);
+    }
 }
 
 .classification-description {
@@ -1132,4 +1231,3 @@ div.bar.bar-purple div.fill {
         flex-direction: column;
     }
 }
-
