@@ -9,9 +9,13 @@
 
     <link rel="stylesheet" th:href="@{/css/ficha.css}">
     <link rel="stylesheet" th:href="@{/css/toast.css}">
+
+    <!-- CSRF Token -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
-<div class="container" th:with="dp=${ficha.detalhesPessoais}, at=${ficha.atributos}, sa=${ficha.subAtributos}, ant=${ficha.antecedentes}" data-ficha-id="${ficha.id}">
+<div class="container" th:with="dp=${ficha.detalhesPessoais}, at=${ficha.atributos}, sa=${ficha.subAtributos}, per=${ficha.periciais}, ant=${ficha.antecedentes}" th:attr="data-ficha-id=${ficha.id != null ? ficha.id : ''}">
     <div class="page-header">
         <h1>Ficha do Personagem</h1>
         <div style="display: flex; gap: 10px;">
@@ -278,7 +282,7 @@
                 </div>
             </div>
             <div class="attr">
-                <input class="num" type="number" th:value="${per != null ? per.arremssar : 0}" oninput="updateTestValues(this)" />
+                <input class="num" type="number" th:value="${per != null ? per.arremessar : 0}" oninput="updateTestValues(this)" />
                 <div class="name">Arremessar (4)</div>
                 <div class="dots">
                     <span class="dot g" data-test="normal">-</span>

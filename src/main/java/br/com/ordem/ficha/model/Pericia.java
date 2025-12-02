@@ -13,6 +13,9 @@ public class Pericia {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(columnDefinition = "int default 0")
+    private int valor = 0;
+
     private int antropologia;
     private int atirarPistolas;
     private int atirarRifles;
