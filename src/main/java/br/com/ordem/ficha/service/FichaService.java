@@ -212,32 +212,61 @@ public class FichaService {
         }
 
         // Atualizar Inventário
-        if (fichaAtualizada.getInventario() != null) {
-            // Limpar inventário existente
-            if (ficha.getInventario() != null) {
-                ficha.getInventario().clear();
-            } else {
-                ficha.setInventario(new java.util.ArrayList<>());
+        // Limpar inventário existente (orphanRemoval=true garante deleção no banco)
+        if (ficha.getInventario() != null) {
+            ficha.getInventario().clear();
+        } else {
+            ficha.setInventario(new java.util.ArrayList<>());
+        }
+        // Criar novas instâncias de ItemInventario para garantir persistência correta
+        if (fichaAtualizada.getInventario() != null && !fichaAtualizada.getInventario().isEmpty()) {
+            System.out.println("Processando " + fichaAtualizada.getInventario().size() + " itens do inventário");
+            for (br.com.ordem.ficha.model.ItemInventario itemAtualizado : fichaAtualizada.getInventario()) {
+                if (itemAtualizado != null) {
+                    String nome = itemAtualizado.getNome();
+                    double peso = itemAtualizado.getPeso();
+                    System.out.println("Item recebido - Nome: '" + nome + "', Peso: " + peso);
+
+                    // Aceitar itens mesmo com nome vazio (pode ser preenchido depois)
+                    // Mas pelo menos verificar se não é null
+                    if (nome != null) {
+                        // Criar nova instância para garantir que seja uma nova entidade JPA
+                        br.com.ordem.ficha.model.ItemInventario novoItem = new br.com.ordem.ficha.model.ItemInventario();
+                        novoItem.setNome(nome.trim());
+                        novoItem.setPeso(peso);
+                        novoItem.setFicha(ficha);
+                        ficha.getInventario().add(novoItem);
+                        System.out.println("Item adicionado ao inventário: " + novoItem.getNome());
+                    } else {
+                        System.out.println("Item ignorado: nome é null");
+                    }
+                }
             }
-            // Adicionar novos itens
-            for (br.com.ordem.ficha.model.ItemInventario item : fichaAtualizada.getInventario()) {
-                item.setFicha(ficha);
-                ficha.getInventario().add(item);
-            }
+            System.out.println("Total de itens no inventário após processamento: " + ficha.getInventario().size());
+        } else {
+            System.out.println("Inventário vazio ou null recebido");
         }
 
         // Atualizar Habilidades
+        // Limpar habilidades existentes (orphanRemoval=true garante deleção no banco)
+        if (ficha.getHabilidades() != null) {
+            ficha.getHabilidades().clear();
+        } else {
+            ficha.setHabilidades(new java.util.ArrayList<>());
+        }
+        // Criar novas instâncias de Habilidade para garantir persistência correta
         if (fichaAtualizada.getHabilidades() != null) {
-            // Limpar habilidades existentes
-            if (ficha.getHabilidades() != null) {
-                ficha.getHabilidades().clear();
-            } else {
-                ficha.setHabilidades(new java.util.ArrayList<>());
-            }
-            // Adicionar novas habilidades
-            for (br.com.ordem.ficha.model.Habilidade hab : fichaAtualizada.getHabilidades()) {
-                hab.setFicha(ficha);
-                ficha.getHabilidades().add(hab);
+            for (br.com.ordem.ficha.model.Habilidade habAtualizada : fichaAtualizada.getHabilidades()) {
+                if (habAtualizada != null && habAtualizada.getNome() != null && !habAtualizada.getNome().trim().isEmpty()) {
+                    // Criar nova instância para garantir que seja uma nova entidade JPA
+                    br.com.ordem.ficha.model.Habilidade novaHabilidade = new br.com.ordem.ficha.model.Habilidade();
+                    novaHabilidade.setNome(habAtualizada.getNome());
+                    novaHabilidade.setDescricao(habAtualizada.getDescricao());
+                    novaHabilidade.setCustoPO(habAtualizada.getCustoPO());
+                    novaHabilidade.setCustoSAN(habAtualizada.getCustoSAN());
+                    novaHabilidade.setFicha(ficha);
+                    ficha.getHabilidades().add(novaHabilidade);
+                }
             }
         }
 

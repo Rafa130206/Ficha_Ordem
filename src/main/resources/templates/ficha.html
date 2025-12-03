@@ -733,6 +733,49 @@
         </div>
     </div>
 </div>
+<script th:inline="javascript">
+    /* Passar dados do inventário e habilidades do backend para o JavaScript */
+    (function() {
+        const ficha = /*[[${ficha}]]*/ null;
+        if (ficha) {
+            // Preparar dados do inventário - garantir que sempre seja um array
+            const inventario = (ficha.inventario && Array.isArray(ficha.inventario)) ? ficha.inventario : [];
+            window.fichaInventoryData = {
+                items: inventario.map(function(item) {
+                    return {
+                        nome: (item && item.nome) ? item.nome : '',
+                        peso: (item && item.peso) ? item.peso : 0
+                    };
+                }),
+                money: 0, // O dinheiro não está sendo salvo no backend ainda
+                maxWeight: 0 // O peso máximo não está sendo salvo no backend ainda
+            };
+
+            // Preparar dados das habilidades - garantir que sempre seja um array
+            const habilidades = (ficha.habilidades && Array.isArray(ficha.habilidades)) ? ficha.habilidades : [];
+            window.fichaSkillsData = {
+                skills: habilidades.map(function(skill) {
+                    return {
+                        nome: (skill && skill.nome) ? skill.nome : '',
+                        descricao: (skill && skill.descricao) ? skill.descricao : '',
+                        custoPO: (skill && skill.custoPO) ? skill.custoPO : 0,
+                        custoSAN: (skill && skill.custoSAN) ? skill.custoSAN : 0
+                    };
+                })
+            };
+        } else {
+            // Se não houver ficha, inicializar com arrays vazios
+            window.fichaInventoryData = {
+                items: [],
+                money: 0,
+                maxWeight: 0
+            };
+            window.fichaSkillsData = {
+                skills: []
+            };
+        }
+    })();
+</script>
 <script th:src="@{/js/toast.js}"></script>
 <script th:src="@{/js/ficha.js}"></script>
 <script th:src="@{/js/ficha-save.js}"></script>

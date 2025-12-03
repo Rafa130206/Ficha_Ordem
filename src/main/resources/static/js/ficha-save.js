@@ -91,6 +91,8 @@
             dadosFicha.id = fichaId;
 
             console.log('Dados coletados:', dadosFicha);
+            console.log('Inventário completo:', JSON.stringify(dadosFicha.inventario, null, 2));
+            console.log('Habilidades completas:', JSON.stringify(dadosFicha.habilidades, null, 2));
             console.log('Enviando para /api/ficha/salvar...');
 
             // Obter token CSRF
@@ -152,20 +154,26 @@
     // Coletar todos os dados da ficha
     function coletarDadosFicha() {
         try {
+            const inventario = coletarInventario();
+            const habilidades = coletarHabilidades();
+
             const dados = {
                 detalhesPessoais: coletarDetalhesPessoais(),
                 atributos: coletarAtributos(),
                 subAtributos: coletarSubAtributos(),
                 periciais: coletarPericias(),
                 antecedentes: coletarAntecedentes(),
-                inventario: coletarInventario(),
-                habilidades: coletarHabilidades()
+                inventario: inventario || [], // Garantir que sempre seja um array, nunca null
+                habilidades: habilidades || [] // Garantir que sempre seja um array, nunca null
             };
 
             // Validar que pelo menos alguns dados foram coletados
             if (!dados.detalhesPessoais && !dados.atributos && !dados.subAtributos) {
                 console.warn('Nenhum dado foi coletado da ficha');
             }
+
+            console.log('Dados coletados - Inventário:', inventario);
+            console.log('Dados coletados - Habilidades:', habilidades);
 
             return dados;
         } catch (error) {
@@ -411,10 +419,14 @@
         // Usar os dados do InventoryManager se disponível
         if (typeof window.inventoryManager !== 'undefined' && window.inventoryManager.exportData) {
             const data = window.inventoryManager.exportData();
-            return data.items.map(item => ({
-                nome: item.name || '',
-                peso: parseFloat(item.weight || 0)
-            }));
+            console.log('Dados do InventoryManager.exportData():', data);
+            // O exportData já retorna items com nome e peso, então podemos usar diretamente
+            if (data.items && Array.isArray(data.items)) {
+                return data.items.map(item => ({
+                    nome: item.nome || '',
+                    peso: parseFloat(item.peso || 0)
+                }));
+            }
         }
         return [];
     }

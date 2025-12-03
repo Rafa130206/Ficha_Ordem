@@ -1,5 +1,6 @@
 package br.com.ordem.ficha.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class ItemInventario {
     private double peso;
 
     @ManyToOne
+    @JsonIgnore
     private Ficha ficha;
 }

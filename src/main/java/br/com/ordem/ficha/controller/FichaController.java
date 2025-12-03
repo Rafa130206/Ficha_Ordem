@@ -60,11 +60,20 @@ public class FichaController {
 
     @PostMapping("/ficha/upload-avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@RequestParam("file") MultipartFile file,
+                                                            @RequestParam("fichaId") Long fichaId,
                                                             @AuthenticationPrincipal User principal) {
         if (file.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "Arquivo vazio"));
         }
+
+        if (fichaId == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", "ID da ficha é obrigatório"));
+        }
+
         try {
+            // Verificar se a ficha pertence ao usuário (validação de segurança)
+            fichaService.buscarPorIdEUsuario(fichaId, principal.getUsername());
+
             String uploadsDir = "uploads"; // pasta na raiz do projeto/servidor
             Path uploadPath = Paths.get(uploadsDir);
             if (!Files.exists(uploadPath)) {
@@ -79,18 +88,14 @@ public class FichaController {
 
             String url = "/uploads/" + filename;
 
-            if (principal != null) {
-                // Buscar a ficha pelo ID do request ou usar a primeira do usuário
-                // Por enquanto, vamos precisar passar o ID via request
-                // Para upload de avatar, assumimos que já estamos em uma ficha específica
-                // Isso será melhorado se necessário
-                Ficha ficha = fichaService.getOrCreateByUSerEmail(principal.getUsername());
-                fichaService.updateAvatarUrl(ficha.getId(), url);
-            }
+            // Atualizar avatar apenas da ficha específica
+            fichaService.updateAvatarUrl(fichaId, url);
 
             Map<String, String> body = new HashMap<>();
             body.put("url", url);
             return ResponseEntity.ok(body);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Falha ao salvar arquivo"));
         }

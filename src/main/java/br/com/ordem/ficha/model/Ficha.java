@@ -29,10 +29,10 @@ public class Ficha {
     @OneToOne(cascade = CascadeType.ALL)
     private Pericia periciais;
 
-    @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemInventario> inventario = new ArrayList<>();
 
-    @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Habilidade> habilidades = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL)

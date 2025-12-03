@@ -116,13 +116,26 @@ function initializeAvatarUpload() {
         };
         reader.readAsDataURL(file);
 
-        // Envia para o servidor
+        // Envia para o servidor com o ID da ficha
+        const container = document.querySelector('.container');
+        const fichaId = container && container.dataset.fichaId ? container.dataset.fichaId : null;
+
+        if (!fichaId) {
+            console.error('ID da ficha não encontrado');
+            alert('Erro: ID da ficha não encontrado. Recarregue a página.');
+            return;
+        }
+
         const form = new FormData();
         form.append('file', file);
+        form.append('fichaId', fichaId);
+
         fetch('/ficha/upload-avatar', { method: 'POST', body: form })
             .then(r => {
                 if (!r.ok) {
-                    throw new Error('Upload failed');
+                    return r.json().then(err => {
+                        throw new Error(err.error || 'Upload failed');
+                    });
                 }
                 return r.json();
             })
@@ -137,6 +150,7 @@ function initializeAvatarUpload() {
             })
             .catch(err => {
                 console.error('Error uploading avatar:', err);
+                alert('Erro ao fazer upload do avatar: ' + err.message);
             });
     });
 }
@@ -235,21 +249,17 @@ class InventoryManager {
     }
 
     initializeInventory() {
-        // Carrega dados salvos do localStorage se existirem
-        const savedData = localStorage.getItem('fichaInventory');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            this.items = data.items || [];
-            if (data.money !== undefined) {
-                this.moneyInput.value = data.money;
-            }
-            if (data.maxWeight !== undefined && this.maxWeightInput) {
-                this.maxWeightInput.value = data.maxWeight;
-            }
+        // Carregar dados do backend (passados via script no template HTML)
+        if (window.fichaInventoryData) {
+            this.importData(window.fichaInventoryData);
+            // Limpa os dados após importar para não usar novamente
+            window.fichaInventoryData = null;
+        } else {
+            // Se não houver dados do backend, inicializa vazio
+            this.items = [];
+            this.renderItems();
+            this.updateTotalWeight();
         }
-
-        this.renderItems();
-        this.updateTotalWeight();
     }
 
     bindEvents() {
@@ -258,16 +268,10 @@ class InventoryManager {
             this.addItem();
         });
 
-        // Evento para salvar dinheiro
-        this.moneyInput.addEventListener('input', () => {
-            this.saveToLocalStorage();
-        });
-
         // Evento para atualizar peso quando o peso máximo mudar
         if (this.maxWeightInput) {
             this.maxWeightInput.addEventListener('input', () => {
                 this.updateTotalWeight();
-                this.saveToLocalStorage();
             });
         }
     }
@@ -282,7 +286,6 @@ class InventoryManager {
         this.items.push(newItem);
         this.renderItems();
         this.updateTotalWeight();
-        this.saveToLocalStorage();
 
         // Foca no campo de nome do novo item
         const newItemElement = this.itemsList.querySelector(`[data-item-id="${newItem.id}"]`);
@@ -294,7 +297,6 @@ class InventoryManager {
         this.items = this.items.filter(item => item.id !== itemId);
         this.renderItems();
         this.updateTotalWeight();
-        this.saveToLocalStorage();
     }
 
     updateItem(itemId, field, value) {
@@ -306,7 +308,6 @@ class InventoryManager {
                 item[field] = value;
             }
             this.updateTotalWeight();
-            this.saveToLocalStorage();
         }
     }
 
@@ -369,14 +370,7 @@ class InventoryManager {
         `).join('');
     }
 
-    saveToLocalStorage() {
-        const data = {
-            items: this.items,
-            money: this.moneyInput.value,
-            maxWeight: this.maxWeightInput ? this.maxWeightInput.value : ''
-        };
-        localStorage.setItem('fichaInventory', JSON.stringify(data));
-    }
+    // Removido saveToLocalStorage - dados são salvos apenas no backend
 
     // Método para exportar dados (útil para salvar no backend)
     exportData() {
@@ -405,7 +399,6 @@ class InventoryManager {
 
         this.renderItems();
         this.updateTotalWeight();
-        this.saveToLocalStorage();
     }
 }
 
@@ -428,14 +421,16 @@ class SkillsManager {
     }
 
     initializeSkills() {
-        // Carrega dados salvos do localStorage se existirem
-        const savedData = localStorage.getItem('fichaSkills');
-        if (savedData) {
-            const data = JSON.parse(savedData);
-            this.skills = data.skills || [];
+        // Carregar dados do backend (passados via script no template HTML)
+        if (window.fichaSkillsData) {
+            this.importData(window.fichaSkillsData);
+            // Limpa os dados após importar para não usar novamente
+            window.fichaSkillsData = null;
+        } else {
+            // Se não houver dados do backend, inicializa vazio
+            this.skills = [];
+            this.renderSkills();
         }
-
-        this.renderSkills();
     }
 
     bindEvents() {
@@ -456,7 +451,6 @@ class SkillsManager {
 
         this.skills.push(newSkill);
         this.renderSkills();
-        this.saveToLocalStorage();
 
         // Foca no campo de nome da nova habilidade
         const newSkillElement = this.skillsList.querySelector(`[data-skill-id="${newSkill.id}"]`);
@@ -467,7 +461,6 @@ class SkillsManager {
     removeSkill(skillId) {
         this.skills = this.skills.filter(skill => skill.id !== skillId);
         this.renderSkills();
-        this.saveToLocalStorage();
     }
 
     updateSkill(skillId, field, value) {
@@ -478,7 +471,6 @@ class SkillsManager {
             } else {
                 skill[field] = value;
             }
-            this.saveToLocalStorage();
         }
     }
 
@@ -542,12 +534,7 @@ class SkillsManager {
         `).join('');
     }
 
-    saveToLocalStorage() {
-        const data = {
-            skills: this.skills
-        };
-        localStorage.setItem('fichaSkills', JSON.stringify(data));
-    }
+    // Removido saveToLocalStorage - dados são salvos apenas no backend
 
     // Método para exportar dados (útil para salvar no backend)
     exportData() {
@@ -574,7 +561,6 @@ class SkillsManager {
         }
 
         this.renderSkills();
-        this.saveToLocalStorage();
     }
 }
 
@@ -597,7 +583,17 @@ class TestSystem {
         this.testDiceLabel = document.querySelector('.test-dice-result .test-label');
         this.testAttributeLabel = document.querySelector('.test-attribute-value .test-label');
 
+        if (!this.testModal) {
+            console.error('TestSystem: Modal de teste não encontrado');
+            return;
+        }
+
         this.initializeTestSystem();
+    }
+
+    // Método para reinicializar os eventos (útil após renderização dinâmica)
+    reinitialize() {
+        this.bindTestEvents();
     }
 
     initializeTestSystem() {
@@ -917,9 +913,12 @@ function initializeProgressBars() {
 // Inicializa o sistema de testes quando a página carrega
 let testSystem;
 document.addEventListener('DOMContentLoaded', function() {
-    testSystem = new TestSystem();
-    window.testSystem = testSystem; // Torna acessível globalmente
+    // Aguardar um pouco para garantir que todos os elementos estejam renderizados
+    setTimeout(() => {
+        testSystem = new TestSystem();
+        window.testSystem = testSystem; // Torna acessível globalmente
 
-    // Inicializa as barras de progresso
-    initializeProgressBars();
+        // Inicializa as barras de progresso
+        initializeProgressBars();
+    }, 100);
 });
