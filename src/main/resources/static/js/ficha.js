@@ -24,6 +24,26 @@ function updateTestValues(input) {
         18: { normal: 3, bom: 12, extremo: 18 },
         19: { normal: 2, bom: 12, extremo: 18 },
         20: { normal: 1, bom: 11, extremo: 17 },
+        21: { normal: 1, bom: 11, extremo: 17 },
+        22: { normal: 1, bom: 10, extremo: 17 },
+        23: { normal: 1, bom: 10, extremo: 17 },
+        24: { normal: 1, bom: 9, extremo: 17 },
+        25: { normal: 1, bom: 9, extremo: 16 },
+        26: { normal: 1, bom: 8, extremo: 16 },
+        27: { normal: 1, bom: 8, extremo: 16 },
+        28: { normal: 1, bom: 7, extremo: 16 },
+        29: { normal: 1, bom: 7, extremo: 16 },
+        30: { normal: 1, bom: 6, extremo: 15 },
+        31: { normal: 1, bom: 6, extremo: 15 },
+        32: { normal: 1, bom: 5, extremo: 15 },
+        33: { normal: 1, bom: 5, extremo: 15 },
+        34: { normal: 1, bom: 4, extremo: 15 },
+        35: { normal: 1, bom: 4, extremo: 14 },
+        36: { normal: 1, bom: 3, extremo: 14 },
+        37: { normal: 1, bom: 3, extremo: 14 },
+        38: { normal: 1, bom: 2, extremo: 14 },
+        39: { normal: 1, bom: 2, extremo: 14 },
+        40: { normal: null, bom: 1, extremo: 13 },
     };
 
     // Busca os valores na tabela ou usa valores padrão para valores fora do range
@@ -31,11 +51,15 @@ function updateTestValues(input) {
 
     if (value >= 1 && value <= 40) {
         const entry = testTable[value];
-        normal = entry.normal;
-        bom = entry.bom;
-        extremo = entry.extremo;
+        if (entry) {
+            normal = entry.normal;
+            bom = entry.bom;
+            extremo = entry.extremo;
+        } else {
+            normal = bom = extremo = null;
+        }
     } else {
-        // Para valores fora do range (0 ou >20), não mostra valores
+        // Para valores fora do range (0 ou >40), não mostra valores
         normal = bom = extremo = null;
     }
 
@@ -1045,16 +1069,41 @@ class TestSystem {
             18: { normal: 3, bom: 12, extremo: 18 },
             19: { normal: 2, bom: 12, extremo: 18 },
             20: { normal: 1, bom: 11, extremo: 17 },
+            21: { normal: 1, bom: 11, extremo: 17 },
+            22: { normal: 1, bom: 10, extremo: 17 },
+            23: { normal: 1, bom: 10, extremo: 17 },
+            24: { normal: 1, bom: 9, extremo: 17 },
+            25: { normal: 1, bom: 9, extremo: 16 },
+            26: { normal: 1, bom: 8, extremo: 16 },
+            27: { normal: 1, bom: 8, extremo: 16 },
+            28: { normal: 1, bom: 7, extremo: 16 },
+            29: { normal: 1, bom: 7, extremo: 16 },
+            30: { normal: 1, bom: 6, extremo: 15 },
+            31: { normal: 1, bom: 6, extremo: 15 },
+            32: { normal: 1, bom: 5, extremo: 15 },
+            33: { normal: 1, bom: 5, extremo: 15 },
+            34: { normal: 1, bom: 4, extremo: 15 },
+            35: { normal: 1, bom: 4, extremo: 14 },
+            36: { normal: 1, bom: 3, extremo: 14 },
+            37: { normal: 1, bom: 3, extremo: 14 },
+            38: { normal: 1, bom: 2, extremo: 14 },
+            39: { normal: 1, bom: 2, extremo: 14 },
+            40: { normal: null, bom: 1, extremo: 13 },
         };
 
         // Busca os valores na tabela
         let normal, bom, extremo;
 
-        if (attributeValue >= 1 && attributeValue <= 20) {
+        if (attributeValue >= 1 && attributeValue <= 40) {
             const entry = testTable[attributeValue];
-            normal = entry.normal;
-            bom = entry.bom;
-            extremo = entry.extremo;
+            if (entry) {
+                normal = entry.normal;
+                bom = entry.bom;
+                extremo = entry.extremo;
+            } else {
+                // Para valores fora do range, não há sucesso possível
+                normal = bom = extremo = null;
+            }
         } else {
             // Para valores fora do range, não há sucesso possível
             normal = bom = extremo = null;
