@@ -571,6 +571,272 @@ document.addEventListener('DOMContentLoaded', function() {
     window.skillsManager = skillsManager; // Expor globalmente
 });
 
+// Attacks Management System
+class AtaquesManager {
+    constructor() {
+        this.ataques = [];
+        this.ataquesList = document.getElementById('ataquesItemsList');
+        this.addAtaqueBtn = document.getElementById('addAtaqueBtn');
+
+        if (!this.ataquesList) {
+            console.error('AtaquesManager: Lista de ataques não encontrada');
+            return;
+        }
+
+        if (!this.addAtaqueBtn) {
+            console.error('AtaquesManager: Botão adicionar ataque não encontrado');
+            return;
+        }
+
+        this.initializeAtaques();
+        this.bindEvents();
+    }
+
+    initializeAtaques() {
+        // Carregar dados do backend (passados via script no template HTML)
+        if (window.fichaAtaquesData) {
+            this.importData(window.fichaAtaquesData);
+            // Limpa os dados após importar para não usar novamente
+            window.fichaAtaquesData = null;
+        } else {
+            // Se não houver dados do backend, inicializa vazio
+            this.ataques = [];
+            this.renderAtaques();
+        }
+    }
+
+    bindEvents() {
+        // Evento para adicionar ataque
+        if (this.addAtaqueBtn) {
+            this.addAtaqueBtn.addEventListener('click', () => {
+                this.addAtaque();
+            });
+        }
+    }
+
+    addAtaque() {
+        console.log('addAtaque chamado');
+        const newAtaque = {
+            id: Date.now(),
+            nome: '',
+            tipo: '',
+            dano: '',
+            municaoAtual: 0,
+            municaoMaxima: 0,
+            qtdAtaques: 0,
+            alcance: '',
+            defeito: '',
+            area: ''
+        };
+
+        this.ataques.push(newAtaque);
+        this.renderAtaques();
+
+        // Foca no campo de nome do novo ataque
+        setTimeout(() => {
+            const newAtaqueElement = this.ataquesList.querySelector(`[data-ataque-id="${newAtaque.id}"]`);
+            if (newAtaqueElement) {
+                const nameInput = newAtaqueElement.querySelector('.ataque-nome');
+                if (nameInput) {
+                    nameInput.focus();
+                }
+            }
+        }, 10);
+    }
+
+    removeAtaque(ataqueId) {
+        this.ataques = this.ataques.filter(ataque => ataque.id !== ataqueId);
+        this.renderAtaques();
+    }
+
+    updateAtaque(ataqueId, field, value) {
+        const ataque = this.ataques.find(ataque => ataque.id === ataqueId);
+        if (ataque) {
+            if (field === 'municaoAtual' || field === 'municaoMaxima' || field === 'qtdAtaques') {
+                ataque[field] = parseInt(value) || 0;
+            } else {
+                ataque[field] = value;
+            }
+        }
+    }
+
+    renderAtaques() {
+        if (this.ataques.length === 0) {
+            this.ataquesList.innerHTML = `
+                <div class="ataques-empty">
+                    Nenhum ataque registrado. Clique em "Adicionar Ataque" para começar.
+                </div>
+            `;
+            return;
+        }
+
+        this.ataquesList.innerHTML = this.ataques.map(ataque => `
+            <div class="ataque-item" data-ataque-id="${ataque.id}">
+                <div class="ataque-row">
+                    <div class="ataque-field">
+                        <label>Nome</label>
+                        <input
+                            type="text"
+                            class="ataque-nome"
+                            placeholder="Nome do ataque"
+                            value="${ataque.nome}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'nome', this.value)"
+                        />
+                    </div>
+                    <div class="ataque-field">
+                        <label>Tipo</label>
+                        <input
+                            type="text"
+                            class="ataque-tipo"
+                            placeholder="Tipo"
+                            value="${ataque.tipo}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'tipo', this.value)"
+                        />
+                    </div>
+                    <div class="ataque-field">
+                        <label>Dano</label>
+                        <input
+                            type="text"
+                            class="ataque-dano"
+                            placeholder="Dano"
+                            value="${ataque.dano}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'dano', this.value)"
+                        />
+                    </div>
+                </div>
+                <div class="ataque-row">
+                    <div class="ataque-field">
+                        <label>Munição Atual</label>
+                        <input
+                            type="number"
+                            class="ataque-municao-atual"
+                            placeholder="0"
+                            min="0"
+                            value="${ataque.municaoAtual}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'municaoAtual', this.value)"
+                        />
+                    </div>
+                    <div class="ataque-field">
+                        <label>Munição Máxima</label>
+                        <input
+                            type="number"
+                            class="ataque-municao-maxima"
+                            placeholder="0"
+                            min="0"
+                            value="${ataque.municaoMaxima}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'municaoMaxima', this.value)"
+                        />
+                    </div>
+                    <div class="ataque-field">
+                        <label>Qtd Ataques</label>
+                        <input
+                            type="number"
+                            class="ataque-qtd-ataques"
+                            placeholder="0"
+                            min="0"
+                            value="${ataque.qtdAtaques}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'qtdAtaques', this.value)"
+                        />
+                    </div>
+                </div>
+                <div class="ataque-row">
+                    <div class="ataque-field">
+                        <label>Alcance</label>
+                        <input
+                            type="text"
+                            class="ataque-alcance"
+                            placeholder="Alcance"
+                            value="${ataque.alcance}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'alcance', this.value)"
+                        />
+                    </div>
+                    <div class="ataque-field">
+                        <label>Defeito</label>
+                        <input
+                            type="text"
+                            class="ataque-defeito"
+                            placeholder="Defeito"
+                            value="${ataque.defeito}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'defeito', this.value)"
+                        />
+                    </div>
+                    <div class="ataque-field">
+                        <label>Área</label>
+                        <input
+                            type="text"
+                            class="ataque-area"
+                            placeholder="Área"
+                            value="${ataque.area}"
+                            onchange="ataquesManager.updateAtaque(${ataque.id}, 'area', this.value)"
+                        />
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    class="btn-remove-ataque"
+                    onclick="ataquesManager.removeAtaque(${ataque.id})"
+                    title="Remover ataque"
+                >
+                    ✕
+                </button>
+            </div>
+        `).join('');
+    }
+
+    // Método para exportar dados (útil para salvar no backend)
+    exportData() {
+        return {
+            ataques: this.ataques.map(ataque => ({
+                nome: ataque.nome || '',
+                tipo: ataque.tipo || '',
+                dano: ataque.dano || '',
+                municaoAtual: parseInt(ataque.municaoAtual) || 0,
+                municaoMaxima: parseInt(ataque.municaoMaxima) || 0,
+                qtdAtaques: parseInt(ataque.qtdAtaques) || 0,
+                alcance: ataque.alcance || '',
+                defeito: ataque.defeito || '',
+                area: ataque.area || ''
+            }))
+        };
+    }
+
+    // Método para importar dados (útil para carregar do backend)
+    importData(data) {
+        if (data.ataques && Array.isArray(data.ataques)) {
+            this.ataques = data.ataques.map((ataque, index) => ({
+                id: Date.now() + index,
+                nome: ataque.nome || '',
+                tipo: ataque.tipo || '',
+                dano: ataque.dano || '',
+                municaoAtual: parseInt(ataque.municaoAtual) || 0,
+                municaoMaxima: parseInt(ataque.municaoMaxima) || 0,
+                qtdAtaques: parseInt(ataque.qtdAtaques) || 0,
+                alcance: ataque.alcance || '',
+                defeito: ataque.defeito || '',
+                area: ataque.area || ''
+            }));
+        }
+
+        this.renderAtaques();
+    }
+}
+
+// Inicializa o gerenciador de ataques quando a página carrega
+let ataquesManager;
+document.addEventListener('DOMContentLoaded', function() {
+    // Verificar se os elementos existem antes de inicializar
+    const ataquesList = document.getElementById('ataquesItemsList');
+    const addAtaqueBtn = document.getElementById('addAtaqueBtn');
+
+    if (ataquesList && addAtaqueBtn) {
+        ataquesManager = new AtaquesManager();
+        window.ataquesManager = ataquesManager; // Expor globalmente
+        console.log('AtaquesManager inicializado com sucesso');
+    } else {
+        console.warn('AtaquesManager: Elementos não encontrados. ataquesList:', ataquesList, 'addAtaqueBtn:', addAtaqueBtn);
+    }
+});
+
 // Test System for Attributes and Skills
 class TestSystem {
     constructor() {

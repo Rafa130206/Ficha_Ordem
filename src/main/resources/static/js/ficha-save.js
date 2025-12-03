@@ -93,6 +93,7 @@
             console.log('Dados coletados:', dadosFicha);
             console.log('Inventário completo:', JSON.stringify(dadosFicha.inventario, null, 2));
             console.log('Habilidades completas:', JSON.stringify(dadosFicha.habilidades, null, 2));
+            console.log('Ataques completos:', JSON.stringify(dadosFicha.ataques, null, 2));
             console.log('Enviando para /api/ficha/salvar...');
 
             // Obter token CSRF
@@ -156,6 +157,7 @@
         try {
             const inventario = coletarInventario();
             const habilidades = coletarHabilidades();
+            const ataques = coletarAtaques();
 
             const dados = {
                 detalhesPessoais: coletarDetalhesPessoais(),
@@ -164,7 +166,8 @@
                 periciais: coletarPericias(),
                 antecedentes: coletarAntecedentes(),
                 inventario: inventario || [], // Garantir que sempre seja um array, nunca null
-                habilidades: habilidades || [] // Garantir que sempre seja um array, nunca null
+                habilidades: habilidades || [], // Garantir que sempre seja um array, nunca null
+                ataques: ataques || [] // Garantir que sempre seja um array, nunca null
             };
 
             // Validar que pelo menos alguns dados foram coletados
@@ -174,6 +177,7 @@
 
             console.log('Dados coletados - Inventário:', inventario);
             console.log('Dados coletados - Habilidades:', habilidades);
+            console.log('Dados coletados - Ataques:', ataques);
 
             return dados;
         } catch (error) {
@@ -442,6 +446,29 @@
                 custoPO: parseInt(skill.custoPO || 0),
                 custoSAN: parseInt(skill.custoSAN || 0)
             }));
+        }
+        return [];
+    }
+
+    // Coletar ataques
+    function coletarAtaques() {
+        // Usar os dados do AtaquesManager se disponível
+        if (typeof window.ataquesManager !== 'undefined' && window.ataquesManager.exportData) {
+            const data = window.ataquesManager.exportData();
+            console.log('Dados do AtaquesManager.exportData():', data);
+            if (data.ataques && Array.isArray(data.ataques)) {
+                return data.ataques.map(ataque => ({
+                    nome: ataque.nome || '',
+                    tipo: ataque.tipo || '',
+                    dano: ataque.dano || '',
+                    municaoAtual: parseInt(ataque.municaoAtual || 0),
+                    municaoMaxima: parseInt(ataque.municaoMaxima || 0),
+                    qtdAtaques: parseInt(ataque.qtdAtaques || 0),
+                    alcance: ataque.alcance || '',
+                    defeito: ataque.defeito || '',
+                    area: ataque.area || ''
+                }));
+            }
         }
         return [];
     }

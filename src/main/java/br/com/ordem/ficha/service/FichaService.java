@@ -270,6 +270,40 @@ public class FichaService {
             }
         }
 
+        // Atualizar Ataques
+        // Limpar ataques existentes (orphanRemoval=true garante deleção no banco)
+        if (ficha.getAtaques() != null) {
+            ficha.getAtaques().clear();
+        } else {
+            ficha.setAtaques(new java.util.ArrayList<>());
+        }
+        // Criar novas instâncias de Ataque para garantir persistência correta
+        if (fichaAtualizada.getAtaques() != null && !fichaAtualizada.getAtaques().isEmpty()) {
+            System.out.println("Processando " + fichaAtualizada.getAtaques().size() + " ataques");
+            for (br.com.ordem.ficha.model.Ataque ataqueAtualizado : fichaAtualizada.getAtaques()) {
+                if (ataqueAtualizado != null) {
+                    String nome = ataqueAtualizado.getNome();
+                    if (nome != null) {
+                        // Criar nova instância para garantir que seja uma nova entidade JPA
+                        br.com.ordem.ficha.model.Ataque novoAtaque = new br.com.ordem.ficha.model.Ataque();
+                        novoAtaque.setNome(nome.trim());
+                        novoAtaque.setTipo(ataqueAtualizado.getTipo());
+                        novoAtaque.setDano(ataqueAtualizado.getDano());
+                        novoAtaque.setMunicaoAtual(ataqueAtualizado.getMunicaoAtual());
+                        novoAtaque.setMunicaoMaxima(ataqueAtualizado.getMunicaoMaxima());
+                        novoAtaque.setQtdAtaques(ataqueAtualizado.getQtdAtaques());
+                        novoAtaque.setAlcance(ataqueAtualizado.getAlcance());
+                        novoAtaque.setDefeito(ataqueAtualizado.getDefeito());
+                        novoAtaque.setArea(ataqueAtualizado.getArea());
+                        novoAtaque.setFicha(ficha);
+                        ficha.getAtaques().add(novoAtaque);
+                        System.out.println("Ataque adicionado: " + novoAtaque.getNome());
+                    }
+                }
+            }
+            System.out.println("Total de ataques após processamento: " + ficha.getAtaques().size());
+        }
+
         return fichaRepository.save(ficha);
     }
 }

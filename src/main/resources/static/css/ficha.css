@@ -593,7 +593,8 @@ div.bar.bar-purple div.fill {
 }
 
 .inventory-header,
-.skills-header {
+.skills-header,
+.ataques-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -603,7 +604,8 @@ div.bar.bar-purple div.fill {
 }
 
 .btn-add-item,
-.btn-add-skill {
+.btn-add-skill,
+.btn-add-ataque {
     background: linear-gradient(135deg, #10b981, #059669);
     border: none;
     color: white;
@@ -617,26 +619,30 @@ div.bar.bar-purple div.fill {
 }
 
 .btn-add-item:hover,
-.btn-add-skill:hover {
+.btn-add-skill:hover,
+.btn-add-ataque:hover {
     background: linear-gradient(135deg, #059669, #047857);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .btn-add-item:active,
-.btn-add-skill:active {
+.btn-add-skill:active,
+.btn-add-ataque:active {
     transform: translateY(0);
 }
 
 .inventory-items-list,
-.skills-items-list {
+.skills-items-list,
+.ataques-items-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
 .inventory-item,
-.skill-item {
+.skill-item,
+.ataque-item {
     display: flex;
     gap: 10px;
     padding: 15px;
@@ -644,10 +650,12 @@ div.bar.bar-purple div.fill {
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 8px;
     align-items: center;
+    position: relative;
 }
 
 .inventory-item input,
-.skill-item input {
+.skill-item input,
+.ataque-item input {
     flex: 1;
     background: #0b0f14;
     border: 1px solid rgba(255,255,255,0.15);
@@ -659,10 +667,77 @@ div.bar.bar-purple div.fill {
 }
 
 .inventory-item input:focus,
-.skill-item input:focus {
+.skill-item input:focus,
+.ataque-item input:focus {
     outline: none;
     border-color: #3b82f6;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Ataques specific styles */
+.ataque-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.ataque-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.ataque-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ataque-field label {
+    font-size: 12px;
+    color: #94a3b8;
+    font-weight: 600;
+}
+
+.ataque-field input {
+    width: 100%;
+    margin: 0;
+}
+
+.btn-remove-ataque {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    border: none;
+    color: white;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.btn-remove-ataque:hover {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+.ataques-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: #94a3b8;
+    font-size: 14px;
+    background: #0e141b;
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: 8px;
 }
 
 .inventory-item .item-weight,
@@ -1216,10 +1291,15 @@ div.bar.bar-purple div.fill {
     }
 
     .inventory-header,
-    .skills-header {
+    .skills-header,
+    .ataques-header {
         flex-direction: column;
         align-items: flex-start;
         gap: 15px;
+    }
+
+    .ataque-row {
+        grid-template-columns: 1fr;
     }
 
     .inventory-weight-section .weight-row {

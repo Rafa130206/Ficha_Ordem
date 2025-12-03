@@ -609,6 +609,22 @@
     </div>
 
     <div class="section">
+        <h2 class="title">Ataques</h2>
+
+        <!-- Lista de ataques -->
+        <div class="ataques-items-section">
+            <div class="ataques-header">
+                <h3>Ataques do Personagem</h3>
+                <button type="button" id="addAtaqueBtn" class="btn-add-ataque">+ Adicionar Ataque</button>
+            </div>
+
+            <div id="ataquesItemsList" class="ataques-items-list">
+                <!-- Ataques serão adicionados dinamicamente aqui -->
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
         <h2 class="title">Inventário</h2>
 
         <!-- Campo para dinheiro -->
@@ -763,6 +779,24 @@
                     };
                 })
             };
+
+            // Preparar dados dos ataques - garantir que sempre seja um array
+            const ataques = (ficha.ataques && Array.isArray(ficha.ataques)) ? ficha.ataques : [];
+            window.fichaAtaquesData = {
+                ataques: ataques.map(function(ataque) {
+                    return {
+                        nome: (ataque && ataque.nome) ? ataque.nome : '',
+                        tipo: (ataque && ataque.tipo) ? ataque.tipo : '',
+                        dano: (ataque && ataque.dano) ? ataque.dano : '',
+                        municaoAtual: (ataque && ataque.municaoAtual) ? ataque.municaoAtual : 0,
+                        municaoMaxima: (ataque && ataque.municaoMaxima) ? ataque.municaoMaxima : 0,
+                        qtdAtaques: (ataque && ataque.qtdAtaques) ? ataque.qtdAtaques : 0,
+                        alcance: (ataque && ataque.alcance) ? ataque.alcance : '',
+                        defeito: (ataque && ataque.defeito) ? ataque.defeito : '',
+                        area: (ataque && ataque.area) ? ataque.area : ''
+                    };
+                })
+            };
         } else {
             // Se não houver ficha, inicializar com arrays vazios
             window.fichaInventoryData = {
@@ -772,6 +806,9 @@
             };
             window.fichaSkillsData = {
                 skills: []
+            };
+            window.fichaAtaquesData = {
+                ataques: []
             };
         }
     })();

@@ -35,6 +35,9 @@ public class Ficha {
     @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Habilidade> habilidades = new ArrayList<>();
 
+    @OneToMany(mappedBy = "ficha", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Ataque> ataques = new ArrayList<>();
+
     @OneToOne(cascade = CascadeType.ALL)
     private Antecedentes antecedentes;
 
