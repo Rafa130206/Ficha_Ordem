@@ -139,22 +139,6 @@ h1 {
     transform: translateY(0);
 }
 
-@media (max-width: 600px) {
-    .page-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    h1 {
-        text-align: center;
-    }
-
-    .menu-back-button,
-    .logout-button {
-        width: 100%;
-        justify-content: center;
-    }
-}
 
 h2 {
     font-size: 24px;
@@ -1105,26 +1089,6 @@ div.bar.bar-purple div.fill {
     margin: 0 0 20px;
 }
 
-@media (max-width: 768px) {
-    .fichas-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .page-header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .page-header > div {
-        width: 100%;
-    }
-
-    .menu-create-button,
-    .logout-button {
-        width: 100%;
-        justify-content: center;
-    }
-}
 
 /* Test Modal Body Styles */
 .test-modal-body {
@@ -1259,10 +1223,93 @@ div.bar.bar-purple div.fill {
     transform: translateY(0);
 }
 
-/* Responsive Design */
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablets (até 1024px) */
+@media (max-width: 1024px) {
+    .container {
+        padding: 25px;
+        max-width: 100%;
+    }
+
+    .grid {
+        gap: 18px;
+    }
+
+    .col-3 {
+        grid-column: span 6;
+    }
+
+    .col-4 {
+        grid-column: span 6;
+    }
+
+    .col-6 {
+        grid-column: span 12;
+    }
+
+    .attributes-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .skills-container {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    .fichas-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+
+    .ataque-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .test-modal-content {
+        max-width: 90%;
+    }
+}
+
+/* Tablets menores e celulares grandes (até 768px) */
 @media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
     .container {
         padding: 20px;
+        border-radius: 10px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    h3 {
+        font-size: 16px;
+    }
+
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .page-header > div {
+        width: 100%;
+    }
+
+    .logout-button,
+    .menu-back-button,
+    .save-button,
+    .menu-create-button {
+        width: 100%;
+        justify-content: center;
     }
 
     .grid {
@@ -1277,8 +1324,18 @@ div.bar.bar-purple div.fill {
         grid-column: span 12;
     }
 
+    .section {
+        padding: 18px;
+        margin-bottom: 20px;
+    }
+
+    .section .title {
+        font-size: 18px;
+    }
+
     .attributes-container {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
     }
 
     .skills-container {
@@ -1287,15 +1344,59 @@ div.bar.bar-purple div.fill {
 
     .avatar-wrap {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .avatar {
+        width: 100px;
+        height: 100px;
+    }
+
+    .d20-clickable {
+        width: 76px;
+        height: 76px;
+    }
+
+    .bar {
+        height: 36px;
+    }
+
+    .bar-input {
+        width: 50px;
+        font-size: 13px;
+    }
+
+    .fichas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ficha-card {
+        padding: 18px;
+    }
+
+    .ficha-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .ficha-card-title {
+        font-size: 16px;
     }
 
     .inventory-header,
     .skills-header,
     .ataques-header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 15px;
+    }
+
+    .btn-add-item,
+    .btn-add-skill,
+    .btn-add-ataque {
+        width: 100%;
+        justify-content: center;
     }
 
     .ataque-row {
@@ -1307,7 +1408,352 @@ div.bar.bar-purple div.fill {
         gap: 15px;
     }
 
+    .inventory-weight-section .weight-item {
+        width: 100%;
+    }
+
+    .inventory-money-section .value {
+        max-width: 100%;
+    }
+
+    .inventory-weight-section .value {
+        max-width: 100%;
+    }
+
+    .inventory-item,
+    .skill-item,
+    .ataque-item {
+        flex-direction: column;
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .inventory-item input,
+    .skill-item input,
+    .ataque-item input {
+        width: 100%;
+    }
+
+    .inventory-item .item-weight,
+    .inventory-item .item-quantity {
+        width: 100%;
+    }
+
+    .btn-remove {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .d20-roll-modal,
+    .test-modal {
+        padding: 10px;
+    }
+
+    .d20-roll-content {
+        padding: 30px 20px;
+        max-width: 95%;
+    }
+
+    .d20-roll-result {
+        font-size: 56px;
+    }
+
+    .test-modal-content {
+        max-width: 95%;
+    }
+
+    .test-modal-header {
+        padding: 18px 20px;
+    }
+
+    .test-modal-header h3 {
+        font-size: 18px;
+    }
+
+    .test-modal-body {
+        padding: 20px;
+    }
+
     .test-result-section {
         flex-direction: column;
+        gap: 20px;
+    }
+
+    .test-value {
+        font-size: 28px;
+    }
+
+    .test-modal-footer {
+        padding: 18px 20px;
+    }
+
+    .weight-display {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+/* Celulares (até 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    h1 {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    h3 {
+        font-size: 15px;
+    }
+
+    .page-header {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .logout-button,
+    .menu-back-button,
+    .save-button,
+    .menu-create-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+
+    .logout-icon,
+    .save-icon {
+        font-size: 14px;
+    }
+
+    .section {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+    }
+
+    .section .title {
+        font-size: 16px;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+
+    .label {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .value {
+        padding: 8px 12px;
+        font-size: 13px;
+        border-radius: 6px;
+    }
+
+    textarea.value {
+        min-height: 60px;
+    }
+
+    .attributes-container {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+    }
+
+    .attr {
+        padding: 12px;
+    }
+
+    .attr .num {
+        width: 50px;
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .attr .name {
+        font-size: 12px;
+    }
+
+    .dot {
+        width: 20px;
+        height: 20px;
+        font-size: 11px;
+    }
+
+    .dots {
+        gap: 6px;
+    }
+
+    .avatar {
+        width: 80px;
+        height: 80px;
+    }
+
+    .avatar .hint {
+        font-size: 11px;
+        padding: 8px;
+    }
+
+    .d20-clickable {
+        width: 64px;
+        height: 64px;
+    }
+
+    .bar {
+        height: 32px;
+        margin-bottom: 8px;
+    }
+
+    .bar-input {
+        width: 45px;
+        padding: 3px 6px;
+        font-size: 12px;
+    }
+
+    .bar-separator {
+        font-size: 13px;
+    }
+
+    .mini input {
+        padding: 6px;
+        font-size: 13px;
+    }
+
+    .mini .lbl {
+        font-size: 11px;
+    }
+
+    .ficha-card {
+        padding: 15px;
+    }
+
+    .ficha-card-header {
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .ficha-avatar {
+        width: 45px;
+        height: 45px;
+    }
+
+    .ficha-card-title {
+        font-size: 15px;
+    }
+
+    .ficha-info {
+        font-size: 13px;
+    }
+
+    .ficha-card-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .ficha-view-button,
+    .ficha-delete-button {
+        width: 100%;
+    }
+
+    .inventory-item,
+    .skill-item,
+    .ataque-item {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .btn-remove-ataque {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+        top: 8px;
+        right: 8px;
+    }
+
+    .ataque-field label {
+        font-size: 11px;
+    }
+
+    .d20-roll-content {
+        padding: 25px 15px;
+    }
+
+    .d20-roll-text {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .d20-roll-result {
+        font-size: 48px;
+        margin: 15px 0;
+    }
+
+    .d20-roll-close {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .test-modal-content {
+        border-radius: 10px;
+    }
+
+    .test-modal-header {
+        padding: 15px;
+    }
+
+    .test-modal-header h3 {
+        font-size: 16px;
+    }
+
+    .test-modal-close {
+        width: 26px;
+        height: 26px;
+        font-size: 20px;
+    }
+
+    .test-modal-body {
+        padding: 15px;
+    }
+
+    .test-label {
+        font-size: 13px;
+    }
+
+    .test-value {
+        font-size: 24px;
+    }
+
+    .classification-result {
+        font-size: 20px;
+    }
+
+    .classification-description {
+        font-size: 13px;
+    }
+
+    .test-modal-footer {
+        padding: 15px;
+    }
+
+    .test-modal-close-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .weight-display {
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    .menu-create-button-large {
+        padding: 14px 24px;
+        font-size: 14px;
     }
 }
