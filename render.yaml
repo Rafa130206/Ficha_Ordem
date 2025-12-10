@@ -1,9 +1,8 @@
 services:
   - type: web
     name: ficha-ordem
-    env: java
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -jar target/ficha-0.0.1-SNAPSHOT.jar --spring.profiles.active=production
+    env: docker
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: production
